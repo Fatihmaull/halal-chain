@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+pdf-build/node_modules/
+
+# PDF build artifacts (regenerable)
+pdf-build/snapshots/
+pdf-build/debug.rendered.html
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# OS & editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
