@@ -1,9 +1,8 @@
 # HalalChain: Decentralized Traceability Protocol for Halal Integrity Assurance
 ## Product Requirements Document (PRD) — v1.0
-### IICYMS 2026 | Science in Islam Category
-**Classification:** Internal Working Document | Team HalalChain (6 Members)
+**Classification:** Internal Working Document
 **Blockchain Network:** Base Sepolia Testnet (OP Stack)
-**Document Status:** FINAL DRAFT
+**Document Status:** DRAFT
 
 ---
 
@@ -22,11 +21,9 @@
 6. [Technical Architecture](#6-technical-architecture)
 7. [Smart Contract Specification](#7-smart-contract-specification)
 8. [UI/UX Requirements](#8-uiux-requirements)
-9. [Development Roadmap (8-Week Plan)](#9-development-roadmap-8-week-plan)
-10. [Competitive Advantage for IICYMS](#10-competitive-advantage-for-iicyms)
+9. [Development Roadmap](#9-development-roadmap)
 11. [Risk Register](#11-risk-register)
 12. [Appendix A: Glossary](#appendix-a-glossary)
-13. [Appendix B: Team Responsibilities](#appendix-b-team-responsibilities)
 
 ---
 
@@ -104,7 +101,7 @@ HalalChain solves each problem through a layered architecture:
 
 ### 2.3 Project Scope
 
-**In Scope (v1.0 — IICYMS Demo):**
+**In Scope (v1.0):**
 - Producer batch registration with IPFS document anchoring
 - Auditor role assignment and batch verification workflow
 - Consumer QR-code-based instant verification
@@ -406,7 +403,7 @@ const config = createConfig({
 |---|---|
 | NFR-04.1 | All documents SHALL be pinned on Pinata with a minimum of 1 pin to ensure persistence |
 | NFR-04.2 | IPFS CIDs SHALL be stored as `string` on-chain (CIDv1 format) |
-| NFR-04.3 | The system SHALL use Pinata's free tier (1 GB storage) for IICYMS demo phase |
+| NFR-04.3 | The system SHALL use Pinata's free tier (1 GB storage) for early prototype phase |
 | NFR-04.4 | Documents SHALL be accessible via public IPFS gateway: `https://gateway.pinata.cloud/ipfs/{CID}` |
 
 ### 5.5 NFR-05: Accessibility & Usability
@@ -534,7 +531,7 @@ import "@openzeppelin/contracts/utils/Pausable.sol";
 
 /**
  * @title HalalChain
- * @author Team HalalChain — IICYMS 2026
+ * @author HalalChain contributors
  * @notice Decentralized halal supply chain traceability protocol on Base Network
  * @dev Implements RBAC via OpenZeppelin AccessControl with IPFS document anchoring
  */
@@ -1222,7 +1219,7 @@ export async function uploadBatchDocuments(
 
 ---
 
-## 9. Development Roadmap (8-Week Plan)
+## 9. Development Roadmap
 
 ### Phase Overview
 
@@ -1231,7 +1228,7 @@ export async function uploadBatchDocuments(
 | **Phase 1** | 1–2 | Foundation & Setup | Dev environment, smart contract skeleton |
 | **Phase 2** | 3–4 | Core Development | Complete smart contract + IPFS integration |
 | **Phase 3** | 5–6 | Frontend & Integration | All 3 dashboards functional |
-| **Phase 4** | 7–8 | Testing, Paper & Demo | Testnet deployment, research paper finalization |
+| **Phase 4** | 7–8 | Testing & Hardening | Testnet deployment, monitoring, documentation |
 
 ---
 
@@ -1333,28 +1330,6 @@ export async function uploadBatchDocuments(
 
 ---
 
-### Week 7: Research Paper Writing
-
-**Lead:** Team Lead + Academic Writer
-
-| Task | Owner | Output |
-|---|---|---|
-| Draft Abstract + Introduction (problem statement) | Team Lead | Sections 1-2 |
-| Write Literature Review (halal traceability, blockchain) | Academic Writer | Section 3 |
-| Document Technical Methodology (architecture diagrams) | Tech Lead | Section 4 |
-| Write Results & Discussion (testnet metrics, gas costs) | Lead Dev | Section 5 |
-| Compile References (IEEE format) | Academic Writer | Bibliography |
-| First draft review by all team members | Full Team | Reviewed draft |
-| Finalize paper and submission formatting (IICYMS template) | Team Lead | Final paper |
-
-**Key Paper Arguments to Emphasize:**
-1. Base's Coinbase backing as a mass adoption catalyst for global halal industry
-2. OP Stack security inheritance from Ethereum mainnet
-3. Gas cost comparison: Base vs Polygon vs BSC for SME viability
-4. Islamic values alignment: Amanah, Thoyyib, Adl in smart contract design
-
----
-
 ### Week 8: Final Demo Preparation & Submission
 
 | Task | Owner | Output |
@@ -1364,7 +1339,7 @@ export async function uploadBatchDocuments(
 | Final end-to-end testing on Base Sepolia | Lead Dev + QA | Passing test suite |
 | Deploy to Vercel (production-like demo URL) | Lead Dev | Live demo URL |
 | README.md with setup instructions | Lead Dev | Documentation |
-| Submit to IICYMS 2026 portal | Team Lead | Submission confirmation |
+| Release v1 prototype | Team Lead | Release notes |
 
 ---
 
@@ -1378,64 +1353,8 @@ Week 4  ████████ Producer Dashboard
 Week 5  ████████ Auditor Dashboard       ← MILESTONE 3: Full App
 Week 6  ████████ Consumer Page + QA      ← MILESTONE 4: QA Complete
 Week 7  ████████ Research Paper
-Week 8  ████████ Demo & Submission       ← MILESTONE 5: IICYMS READY
+Week 8  ████████ Release & Hardening
 ```
-
----
-
-## 10. Competitive Advantage for IICYMS
-
-### 10.1 Why Base (OP Stack) Provides Superior "Wow Factor"
-
-#### 10.1.1 Coinbase Institutional Backing — The Mass Adoption Argument
-
-Base is the only Ethereum L2 incubated by a **publicly traded, SEC-regulated financial institution** (Coinbase, NASDAQ: COIN). This is not a minor technical detail — it is HalalChain's strongest argument for real-world viability:
-
-> "A halal traceability system on Base is not a student prototype. It is a system that can be accessed by any of Coinbase's 110 million verified users with a single wallet tap."
-
-**For the research paper:** Emphasize that MUI's halal certification currently reaches ~270 million Indonesian Muslims, but the global Muslim population is **1.9 billion**. Base's infrastructure, backed by Coinbase's global operations, is the only L2 with a credible pathway to serving this audience at scale.
-
-#### 10.1.2 Technical Comparison: Base vs Competing L2s
-
-| Criteria | **Base (OP Stack)** | Polygon (PoS) | BNB Smart Chain | Arbitrum |
-|---|---|---|---|---|
-| **Security Model** | Ethereum L1 (Optimistic Rollup) | Independent PoS | Independent PoS | Ethereum L1 (Optimistic) |
-| **Decentralization** | High (Ethereum-secured) | Medium | Low (21 validators) | High |
-| **Institutional Backer** | **Coinbase** 🏆 | Polygon Labs | Binance | Offchain Labs |
-| **EVM Compatibility** | Full | Full | Full | Full |
-| **Gas Cost (avg)** | ~$0.001 | ~$0.01 | ~$0.005 | ~$0.002 |
-| **Block Finality** | ~2 seconds | ~2 seconds | ~3 seconds | ~0.25 seconds |
-| **Consumer Wallet** | Coinbase Wallet | MetaMask | MetaMask/Trust | MetaMask |
-| **Halal Industry Appeal** | **Coinbase's brand trust** | Generic | Associated with gambling dApps | Enterprise-focused |
-| **Testnet Faucet** | Free (Alchemy/CDP) | Free | Free | Free |
-
-#### 10.1.3 The "Science in Islam" Angle
-
-The competition category is **Science in Islam**. HalalChain's value proposition is strengthened by framing it through this lens:
-
-**Maqasid Al-Shariah (Objectives of Islamic Law):**
-
-| Maqasid | HalalChain Implementation |
-|---|---|
-| **Hifz Al-Nafs** (Protection of Life) | Ensures food is genuinely halal, protecting health |
-| **Hifz Al-Mal** (Protection of Wealth) | Protects consumers from fraud; protects legitimate producers from fake competitors |
-| **Hifz Al-'Aql** (Protection of Intellect) | Blockchain transparency enables informed decision-making |
-| **Hifz Al-Nasl** (Protection of Lineage) | Ensures children's food is verified halal |
-| **Hifz Al-Din** (Protection of Religion) | Upholds the sanctity of halal as a religious obligation |
-
-#### 10.1.4 Technical Novelty for Academic Judges
-
-Aspects that differentiate HalalChain from other blockchain food traceability projects (which typically use Hyperledger or generic public chains):
-
-1. **OP Stack Selection Rationale:** Choosing Base's OP Stack over alternatives demonstrates understanding of L2 security trade-offs (optimistic vs. ZK rollups) — a technically sophisticated choice.
-
-2. **RBAC + IPFS Hybrid Architecture:** Separating expensive document storage (IPFS) from cheap on-chain anchoring (Base) is a production-grade architectural decision rarely seen in student projects.
-
-3. **Islamic Values Encoding in Smart Contract Design:** The `revokeCertification()` function ensures accountability even after certification — a direct embodiment of Islamic *Hisba* (accountability principle).
-
-4. **Zero-Cost Full Stack:** Demonstrating a fully functional, production-viable system on $0 budget using Base Sepolia + Pinata free tier + Vercel is a strong argument for accessibility and SME adoption.
-
-5. **Consumer UX Without Crypto Knowledge:** The wallet-free consumer verification page demonstrates that blockchain technology can be "invisible" to end users — addressing the mainstream adoption problem head-on.
 
 ---
 
@@ -1449,7 +1368,7 @@ Aspects that differentiate HalalChain from other blockchain food traceability pr
 | R-04 | Team member unavailability | Medium | Medium | Cross-training; document all code thoroughly |
 | R-05 | IPFS files become inaccessible | Low | Medium | All files pinned; backup to secondary Pinata account |
 | R-06 | Gas estimation fails on frontend | Low | Low | Hardcode gas limit fallback for demo |
-| R-07 | Paper submission deadline missed | Low | Critical | Week 7 dedicated to paper; buffer in Week 8 |
+| R-07 | Release deadline missed | Medium | Medium | Keep scope tight; ship in increments |
 
 ---
 
@@ -1474,28 +1393,4 @@ Aspects that differentiate HalalChain from other blockchain food traceability pr
 
 ---
 
-## Appendix B: Team Responsibilities
-
-| Role | Responsibilities |
-|---|---|
-| **Team Lead** | Project management, research paper lead author, IICYMS submission, presentation |
-| **Lead Developer** | Smart contract development, deployment, contract testing, backend integration |
-| **Frontend Developer** | Next.js dashboards (all 3), wallet integration, QR code generation |
-| **Backend Developer** | Pinata IPFS service, API routes, environment configuration |
-| **UI/UX Designer** | Figma designs, design system, presentation slides, demo video |
-| **QA/Academic Writer** | Testing, literature review, references, paper formatting |
-
----
-
-*Document prepared by: Team HalalChain*
-*Competition: IICYMS 2026 — Science in Islam Category*
 *Network: Base Sepolia Testnet (Chain ID: 84532)*
-*Contract Explorer: https://sepolia.basescan.org*
-*Faucet (Alchemy): https://www.alchemy.com/faucets/base-sepolia*
-*Faucet (Coinbase): https://portal.cdp.coinbase.com/products/faucet*
-
----
-
-> *"Sesungguhnya Allah menyuruh kamu berlaku adil dan berbuat kebajikan..."*
-> *"Indeed, Allah commands you to render trusts to whom they are due..."*
-> — **An-Nahl: 90**
