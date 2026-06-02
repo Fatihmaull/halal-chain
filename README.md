@@ -104,6 +104,65 @@ Repository ini berisi dokumen akademik dan tooling internal tim KKN. Status peng
 
 ---
 
+## Prototype (kode) – Contracts + Web
+
+Folder baru yang ditambahkan:
+
+- `contracts/`: Hardhat 3 + Solidity (smart contract `HalalChain.sol`)
+- `web/`: Next.js (App Router) + Tailwind + Wagmi (dashboard + halaman verifikasi)
+
+### Jalankan lokal (Hardhat + Next.js)
+
+**1) Smart contract**
+
+```bash
+cd contracts
+npm install
+npm run build
+npm test
+```
+
+Start node lokal + deploy:
+
+```bash
+cd contracts
+npm run node
+```
+
+Di terminal lain:
+
+```bash
+cd contracts
+npm run deploy:local
+```
+
+Copy address kontrak yang tercetak (mis. `0x...`).
+
+**2) Web (Next.js)**
+
+```bash
+cd web
+npm install
+copy .env.example .env.local
+```
+
+Edit `web/.env.local` lalu isi:
+
+- `NEXT_PUBLIC_HALALCHAIN_ADDRESS=<address hasil deploy>`
+
+Jalankan:
+
+```bash
+cd web
+npm run dev
+```
+
+Halaman:
+
+- `/verify/1` (konsumen, read-only)
+- `/producer` (register batch)
+- `/auditor` (verify/reject batch)
+
 <p align="center">
   <em>Wahyu Memandu Ilmu — UIN Sunan Gunung Djati Bandung</em><br>
   <strong>HalalChain · 2026</strong>
