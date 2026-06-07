@@ -2,19 +2,50 @@
 \label{sec:discussion}
 
 \subsection{Trust Assumptions and Limitations}
-We explicitly state the following trust assumptions:
+We explicitly state the following trust assumptions so that adopters can reason about residual risk:
+
 \begin{enumerate}
-  \item \textbf{Administrator honesty} --- \texttt{DEFAULT\_ADMIN\_ROLE} grants auditor privileges; compromise of the admin key compromises auditor integrity.
-  \item \textbf{Auditor diligence} --- on-chain records attest that an auditor address approved a batch; they do not cryptographically prove halal compliance of ingredients.
-  \item \textbf{IPFS pinning availability} --- documents require active Pinata pins; unpinned CIDs become unavailable off-chain while on-chain CIDs remain.
-  \item \textbf{Testnet scope} --- evaluation on Base Sepolia does not imply production BPJPH integration or mainnet readiness.
+  \item \textbf{Administrator honesty} --- \texttt{DEFAULT\_ADMIN\_ROLE} grants auditor and producer privileges.
+  Compromise of the admin key or collusion with a malicious auditor undermines certification integrity despite immutable logs.
+  \item \textbf{Auditor diligence} --- on-chain records attest that an auditor address approved a batch at a given time; they do not cryptographically prove halal compliance of ingredients, slaughter method, or supplier behavior.
+  HalalChain is an \emph{audit trail}, not an automated halal classifier.
+  \item \textbf{IPFS pinning availability} --- documents require active Pinata (or self-hosted) pins.
+  Unpinned or expired CIDs become unavailable off-chain while on-chain CIDs remain, producing a `` dangling reference'' state consumers must interpret cautiously.
+  \item \textbf{L2 sequencer liveness} --- Base relies on rollup infrastructure; prolonged outages delay writes but do not silently alter committed state.
+  \item \textbf{Testnet scope} --- evaluation on Base Sepolia does not imply production BPJPH integration, legal equivalence to SIHALAL registration, or mainnet readiness without further governance and key-management review.
 \end{enumerate}
 
-These limitations partially constrain the \emph{Adl} (justice) design requirement until multi-signature auditor governance is implemented~\cite{gnosis2024safe}.
+These limitations partially constrain the \emph{Adl} (justice) design requirement until multi-signature auditor governance or DAO-based role assignment is implemented~\cite{gnosis2024safe}.
+Future versions could require \texttt{m}-of-\texttt{n} auditor approvals for verification, aligning on-chain policy with institutional halal boards.
 
 \subsection{Comparison with Centralized Alternatives}
-Centralized databases offer lower operational complexity but permit retroactive record alteration by administrators~\cite{underwood2016blockchain,viriyasitavat2019blockchain}.
-HalalChain trades this for public verifiability and immutable audit trails at the cost of wallet onboarding for producers/auditors and IPFS infrastructure.
+Centralized databases offer lower operational complexity, familiar SQL tooling, and straightforward BPJPH workflow integration~\cite{underwood2016blockchain,viriyasitavat2019blockchain}.
+Administrators can revoke access, correct typos, and run batch reports without gas fees.
+However, centralized models permit retroactive record alteration by privileged users and provide no permissionless third-party verification---consumers must trust the operator's API responses.
+
+HalalChain trades these properties for public verifiability and append-only audit trails.
+Producers and auditors must manage Ethereum wallets and ETH (or bridged ETH on Base) for writes; IPFS pinning incurs recurring or per-GB costs.
+For UMKM producers, subsidized onboarding (meta-transactions, paymasters, or institutional sponsors) may be necessary for adoption at scale.
+
+Compared to enterprise blockchains (Hyperledger), HalalChain favors transparency over transaction privacy: batch status is world-readable.
+Halal certification is inherently a \emph{public claim}; private channels may matter for trade-secret formulations but are out of scope for v1.
+
+\subsection{Implications for UMKM and Policy}
+Indonesia's halal labeling mandate creates demand for affordable traceability tools.
+HalalChain demonstrates a reference architecture that BPJPH-accredited bodies, regional cooperatives, or university KKN teams could pilot without licensing proprietary platforms.
+Integration with SIHALAL would require official API access, legal mapping of on-chain status to registration numbers, and auditor accreditation workflows---none of which are implemented in the prototype.
+
+Export markets increasingly expect digital traceability~\cite{marianingsih2024halal}.
+A QR-linked public verify page could complement physical labels, though regulatory acceptance varies by destination country.
 
 \subsection{Future Work}
-Future directions include multi-signature auditor verification, DAO-based auditor election, Base mainnet deployment, IoT sensor anchoring, and integration with BPJPH SIHALAL if APIs become available.
+Future directions include:
+\begin{itemize}
+  \item multi-signature auditor verification and time-locked revocation;
+  \item DAO-based auditor election with stake or reputation modules;
+  \item Base mainnet deployment with cost monitoring dashboards;
+  \item IoT sensor anchoring (temperature, GPS) via oracle networks;
+  \item integration with BPJPH SIHALAL if APIs become available;
+  \item formal verification of FSM transitions in \texttt{HalalChain.sol};
+  \item user studies with UMKM producers and consumers on usability of wallet onboarding and QR verification.
+\end{itemize}

@@ -1,7 +1,13 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented HalalChain, an L2 batch traceability protocol for halal certification that combines on-chain immutable audit records with off-chain IPFS document storage.
-Contributions include revision history after rejection, Maqasid-aligned design requirement mapping, and an open reproducible implementation.
-Qualitative evaluation confirms tamper resistance and role-based access control; quantitative testnet benchmarks are pending Base Sepolia deployment.
-Future work will address decentralized auditor governance and mainnet deployment for UMKM producers.
+This paper presented HalalChain, a batch traceability protocol for halal certification that combines on-chain immutable audit records on Base L2 with off-chain IPFS document storage.
+We addressed trust deficits in certificate forgery and centralized tampering by encoding producer registration, auditor decisions, and revision history as explicit finite-state transitions enforced by Solidity smart contracts with OpenZeppelin RBAC.
+
+Contributions include: (i)~a minimal three-role architecture enabling wallet-free consumer verification via QR-linked URLs; (ii)~immutable rejection and structured revision through \texttt{parentBatchId} links; (iii)~mapping of Maqasid-aligned ethical design requirements to testable protocol properties; and (iv)~an open-source implementation with unit tests, functional scenarios, and a reproducible evaluation pipeline.
+
+Qualitative evaluation confirmed tamper resistance on rejected batches, role-based access control, and end-to-end dashboard integration on local networks.
+Preliminary localhost gas measurements indicate sub-200k gas for primary write operations, suggesting L2 deployment feasibility for UMKM producers, though Base Sepolia benchmarks remain pending funded deployment.
+
+HalalChain is not a substitute for BPJPH/MUI halal determination; it provides transparent evidence of \emph{which auditor} approved \emph{which batch documents} at \emph{which time}.
+Future work will address decentralized auditor governance, mainnet cost optimization, and policy-facing pilots with Indonesian halal certification stakeholders.

@@ -1,11 +1,12 @@
 \begin{abstract}
-The global halal industry faces persistent trust deficits stemming from certificate forgery, opaque supply chains, and centralized databases susceptible to tampering.
-This paper presents HalalChain, a decentralized batch traceability protocol on Base Network (Ethereum Layer~2) that anchors certification records on a public blockchain while storing supporting documents on the InterPlanetary File System (IPFS).
-We contribute an L2-optimized protocol with immutable revision history after auditor rejection, a mapping from Maqasid-aligned ethical design requirements to verifiable system properties, and an open reproducible implementation.
-Section~\ref{sec:eval} reports qualitative security analysis and functional validation; quantitative gas and latency benchmarks on Base Sepolia testnet are reserved for a follow-up deployment (Section~\ref{sec:eval-b}).
-HalalChain enables consumer verification via QR codes without cryptocurrency wallets, while producers and auditors interact through role-based smart contracts.
+The global halal economy exceeds USD~2 trillion in consumer spending, yet certification trust remains fragile: physical certificates can be forged, enterprise databases can be altered by privileged administrators, and consumers rarely obtain batch-level proof at the point of purchase.
+Indonesia's mandatory halal labeling regime (BPJPH/MUI) intensifies the need for verifiable, low-cost traceability for micro, small, and medium enterprises (UMKM) that cannot afford enterprise blockchain platforms.
+This paper presents \emph{HalalChain}, a decentralized batch traceability protocol deployed on Base Network---an Ethereum Layer~2 rollup---that anchors certification \emph{status}, content identifiers (CIDs), and audit metadata on a public ledger while storing supporting documents (PDFs, lab reports, ingredient lists) on the InterPlanetary File System (IPFS).
+We contribute: (i)~a minimal three-role smart contract design with OpenZeppelin role-based access control (RBAC) and immutable revision history after auditor rejection; (ii)~an explicit mapping from Maqasid-aligned ethical \emph{design requirements} to enforceable protocol properties; (iii)~an open-source implementation comprising Solidity contracts, Hardhat tests, and bilingual producer/auditor/consumer web dashboards with wallet-free consumer QR verification.
+Section~\ref{sec:eval} reports qualitative security analysis, finite-state validation, and functional scenario testing; quantitative gas and latency benchmarks on Base Sepolia testnet are reserved pending funded deployment (Section~\ref{sec:eval-b}).
+HalalChain demonstrates that halal batch integrity can be made publicly auditable without requiring consumers to operate cryptocurrency wallets.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Blockchain, halal traceability, supply chain, IPFS, Base Network, smart contracts, Layer~2 scaling
+Blockchain, halal traceability, supply chain, IPFS, Base Network, smart contracts, Layer~2 scaling, Islamic ethics, RBAC
 \end{IEEEkeywords}

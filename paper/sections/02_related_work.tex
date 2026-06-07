@@ -1,24 +1,40 @@
 \section{Related Work}
 \label{sec:related}
 
-Table~\ref{tab:related} compares HalalChain with representative traceability systems.
-Prior halal-specific platforms such as HALAL TRACE rely on centralized databases~\cite{rashid2018halal}.
-General blockchain food traceability systems (IBM Food Trust, VeChain) demonstrate industry adoption but are not tailored to halal certification workflows or Islamic ethical framing~\cite{kamilaris2019blockchain,casino2021systematic,kamath2018blockchain}.
+Table~\ref{tab:related} compares HalalChain with representative traceability systems across halal specificity, decentralization, consumer wallet requirements, and support for post-rejection revision history.
+Prior halal-specific platforms such as HALAL TRACE rely on centralized databases and do not expose immutable public audit trails~\cite{rashid2018halal}.
+General blockchain food traceability systems (IBM Food Trust, VeChain) demonstrate industry adoption but are not tailored to halal certification workflows, auditor rejection semantics, or Islamic ethical framing~\cite{kamilaris2019blockchain,casino2021systematic,kamath2018blockchain}.
+Government portals such as BPJPH SIHALAL provide authoritative registration but remain centrally administered without batch-level public verifiability for arbitrary third parties.
 
 \input{tables/related_work}
 
 \subsection{Blockchain Supply Chain Traceability}
 Systematic reviews identify immutability, auditability, and multi-stakeholder trust as primary motivations for blockchain in supply chains~\cite{casino2021systematic,kshetri2018blockchain,galvez2018future}.
-Permissioned ledgers (Hyperledger Fabric) dominate enterprise pilots~\cite{andoni2019blockchain}, while public chains enable permissionless consumer verification at the cost of gas fees---motivating Layer~2 deployment~\cite{kalodner2018arbitrum,optimism2024spec}.
+Permissioned ledgers (Hyperledger Fabric) dominate enterprise pilots because they offer identity management, private channels, and predictable throughput~\cite{andoni2019blockchain,abeyratne2016blockchain}.
+Public chains enable permissionless read access---any consumer with a batch identifier can verify status without vendor cooperation---at the cost of transaction fees and wallet onboarding for writers~\cite{underwood2016blockchain}.
+Layer~2 rollups such as Optimistic rollups (including the OP Stack underlying Base) batch transactions to L1 while inheriting Ethereum security assumptions, reducing per-operation cost~\cite{kalodner2018arbitrum,optimism2024spec}.
+HalalChain adopts a public L2 precisely to preserve read transparency for consumers while keeping write costs within UMKM reach.
+
+Food-industry reviews note recurring patterns: on-chain hashes or identifiers, off-chain payloads, and event logs for provenance~\cite{rejeb2020blockchain,kouhizadeh2018blockchain}.
+Caro \emph{et al.} implement agri-food traceability with blockchain-backed event chains~\cite{caro2018blockchain}; HalalChain differs by centering \emph{certification status} and \emph{auditor decisions} rather than logistics events alone.
 
 \subsection{Halal Integrity Systems}
-Halal supply chain literature emphasizes traceability from farm to fork and certification authenticity~\cite{sidarto2021halal,rejeb2018halal,rashid2018halal}.
-Recent proposals combine blockchain with QR verification for halal products~\cite{alourani2025halal,marianingsih2024halal}, but few address auditor rejection workflows with immutable revision history on a public L2.
+Halal supply chain literature emphasizes traceability from farm to fork, certification authenticity, and cross-border recognition~\cite{sidarto2021halal,rejeb2018halal,rashid2018halal}.
+Sidarto and Hamka propose blockchain for poultry traceability in Indonesia, highlighting integration challenges with existing BPJPH processes~\cite{sidarto2021halal}.
+Rejeb \emph{et al.} combine HACCP, blockchain, and IoT for halal meat supply chains~\cite{rejeb2018halal}.
+Recent proposals combine blockchain with QR verification and AI-assisted document checks~\cite{alourani2025halal,marianingsih2024halal}.
+
+However, few systems model \emph{auditor rejection} as a terminal on-chain state with a structured resubmission path.
+In practice, rejected applications are corrected off-ledger and re-enter workflows opaquely---undermining accountability (\emph{Hisba}).
+HalalChain encodes rejection reasons, audit document CIDs, and \texttt{parentBatchId} links so that consumers and regulators can inspect the full decision trail.
 
 \subsection{Off-Chain Storage and IPFS}
-Storing full documents on-chain is economically infeasible; content-addressable off-chain storage via IPFS with on-chain content identifier (CID) anchoring is a established pattern~\cite{benet2014ipfs,christidis2016blockchain,caro2018blockchain}.
+Storing full PDF certificates and lab reports on-chain is economically infeasible: gas scales with calldata size, and chain nodes replicate all data globally~\cite{benet2014ipfs,christidis2016blockchain}.
+Content-addressable storage via IPFS derives identifiers (CIDs) from document hashes; any tampering changes the CID, enabling integrity checks when the CID is anchored on-chain~\cite{benet2014ipfs}.
+Christidis and Devetsikiotis survey smart-contract and IoT integration patterns where blockchains store references, not payloads~\cite{christidis2016blockchain}.
+HalalChain follows this pattern: the contract stores \texttt{ipfsCid} and \texttt{auditIpfsCid} strings; Pinata provides pinning so gateways remain resolvable during evaluation.
 
 \subsection{Research Gap}
-Existing halal digital systems predominantly rely on centralized databases.
-HalalChain combines public verifiability, L2 cost efficiency, auditor-driven workflow, and revision history---while explicitly mapping ethical design requirements to enforceable protocol properties (Section~\ref{sec:prelim}).
-Published L2 gas benchmarks from prior work~\cite{kalodner2018arbitrum} inform cost motivation; HalalChain-specific metrics are reported only after testnet deployment (Section~\ref{sec:eval-b}).
+Existing halal digital systems predominantly rely on centralized databases or enterprise blockchains without wallet-free consumer verification.
+HalalChain combines: (i)~public L2 verifiability; (ii)~RBAC-separated producer/auditor roles; (iii)~immutable revision history after rejection; and (iv)~explicit mapping of ethical design requirements to protocol properties (Section~\ref{sec:prelim}).
+Published L2 gas benchmarks from prior work~\cite{kalodner2018arbitrum} inform cost motivation; HalalChain-specific mainnet or testnet metrics are reported only after deployment (Section~\ref{sec:eval-b}).

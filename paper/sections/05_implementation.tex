@@ -8,31 +8,57 @@ The open-source repository is available at \url{https://github.com/Fatihmaull/ha
   \caption{HalalChain implementation stack.}
   \label{tab:stack}
   \centering
-  \begin{tabular}{@{}ll@{}}
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.22\columnwidth}X@{}}
     \toprule
     \textbf{Layer} & \textbf{Technology} \\
     \midrule
-    Blockchain & Solidity 0.8.20, OpenZeppelin, Base Sepolia \\
-    Development & Hardhat 3, Mocha/Chai (7 tests) \\
-    Frontend & Next.js 16, Wagmi v3, Viem, Tailwind \\
-    Storage & IPFS via Pinata (server-side upload API) \\
-    Deployment & Hardhat scripts, Vercel (frontend) \\
+    Blockchain & Solidity 0.8.20, OpenZeppelin 5.x, Base Sepolia (84532) \\
+    Development & Hardhat 3.7, Mocha/Chai (7 tests), TypeScript scripts \\
+    Frontend & Next.js 16, Wagmi v3, Viem 2.x, Tailwind CSS \\
+    Storage & IPFS via Pinata (\texttt{POST /api/ipfs/upload}) \\
+    Deployment & \makecell[tl]{Hardhat (\texttt{deploy:local},\\\texttt{deploy:base-sepolia}), Vercel} \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 \subsection{Smart Contracts}
-The contract implements RBAC with \texttt{AccessControl}, replacing a single-owner auditor mapping.
-Unit tests cover registration, verification, rejection, revision, revocation, unauthorized access, and invalid batch identifiers.
+The \texttt{HalalChain} contract extends OpenZeppelin \texttt{AccessControl}~\cite{openzeppelin2024access}, replacing an earlier single-owner auditor mapping with explicit roles grantable by \texttt{DEFAULT\_ADMIN\_ROLE}.
+The constructor assigns admin to the deployer; deployment scripts optionally grant producer and auditor roles to configured addresses for testnet demos.
 
-\subsection{Web Application}
-Three dashboards serve distinct roles:
+Unit tests (\texttt{contracts/test/HalalChain.test.ts}) cover:
 \begin{itemize}
-  \item \textbf{Producer} --- multi-step registration, IPFS upload, QR code generation, batch history
-  \item \textbf{Auditor} --- pending queue, document review links, verify/reject/revoke with confirmation
-  \item \textbf{Consumer} --- \texttt{/verify/\{batchId\}} read-only page; bilingual EN/ID; no wallet required
+  \item batch registration and monotonic \texttt{nextBatchId} assignment;
+  \item verification and rejection with role enforcement;
+  \item revision after rejection with \texttt{NotOriginalProducer} and \texttt{ParentNotRejected} guards;
+  \item revocation from Verified state;
+  \item unauthorized calls from addresses lacking \texttt{PRODUCER\_ROLE} or \texttt{AUDITOR\_ROLE};
+  \item invalid \texttt{batchId} lookups reverting with \texttt{InvalidBatch}.
 \end{itemize}
 
-\subsection{IPFS Upload}
-A Next.js API route (\texttt{POST /api/ipfs/upload}) pins files via Pinata JWT server-side.
-A development mock mode generates deterministic local CIDs when Pinata is not configured; benchmarks use real Pinata pins only (Section~\ref{sec:eval-b}).
+Hardhat scripts include \texttt{deploy.ts} (local or Base Sepolia), \texttt{export-abi.ts} (ABI copy to \texttt{web/src/contracts/}), and \texttt{evaluate-gas.ts} (receipt gas aggregation for evaluation scenarios).
+
+\subsection{Web Application}
+Three role-specific dashboards share a common layout and bilingual (English/Indonesian) strings:
+
+\textbf{Producer dashboard} guides users through product naming, multi-file upload, IPFS pinning, and \texttt{registerBatch} submission.
+After confirmation, the UI displays the assigned \texttt{batchId}, transaction hash, and a QR code pointing to the consumer verify URL.
+Batch history lists prior registrations with status badges and links to parent batches when applicable.
+
+\textbf{Auditor dashboard} presents a pending queue fetched via \texttt{getBatch} iteration or event logs.
+Auditors open IPFS document links in new tabs, then submit \texttt{verifyBatch}, \texttt{rejectBatch} (with reason text), or \texttt{revokeBatch} through wallet-connected writes.
+Confirmation modals reduce accidental state changes.
+
+\textbf{Consumer verify page} (\texttt{/verify/[batchId]}) performs read-only RPC calls.
+It renders green ``Halal Certified'' / ``Tersertifikasi Halal'' for Verified batches, red rejection messaging with \texttt{rejectReason} for Rejected batches, and neutral pending/revoked states otherwise.
+Parent batch links enable traceability across revision chains.
+
+\subsection{IPFS Upload Pipeline}
+A Next.js API route (\texttt{POST /api/ipfs/upload}) accepts \texttt{multipart/form-data} file uploads, pins via Pinata JWT server-side, and returns the CID JSON payload to the client.
+Environment variable \texttt{PINATA\_JWT} is required for production pins; when absent, a development mock mode generates deterministic local CIDs so UI flows remain testable without external services.
+Benchmarks intended for publication (Section~\ref{sec:eval-b}) will use real Pinata pins only.
+
+\subsection{Configuration and Deployment}
+Frontend environment variables include \texttt{NEXT\_PUBLIC\_HALALCHAIN\_ADDRESS}, \texttt{NEXT\_PUBLIC\_BASE\_SEPOLIA\_RPC\_URL}, and optional \texttt{NEXT\_PUBLIC\_DEMO\_URL} for QR base URLs.
+Contract deployment on Base Sepolia requires \texttt{DEPLOYER\_PRIVATE\_KEY} and faucet-funded ETH; reproducibility steps appear in Appendix~\ref{app:repro}.

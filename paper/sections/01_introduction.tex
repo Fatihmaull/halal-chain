@@ -1,24 +1,38 @@
 \section{Introduction}
 \label{sec:intro}
 
-Halal certification in Indonesia is governed by the Badan Penyelenggara Jaminan Produk Halal (BPJPH) and the Majelis Ulama Indonesia (MUI), yet consumers and export markets continue to report trust gaps~\cite{sidarto2021halal,rashid2018halal}.
-Physical certificates can be forged; centralized enterprise databases can be altered by administrators~\cite{kshetri2018blockchain,underwood2016blockchain}.
-Blockchain technology offers cryptographically secured, append-only records that support the design requirement of \emph{Amanah} (trustworthiness)---permanent, tamper-evident testimony~\cite{zheng2020overview}.
+Halal certification in Indonesia is governed by the Badan Penyelenggara Jaminan Produk Halal (BPJPH) under Law No.~33/2014, with product-category auditing often involving the Majelis Ulama Indonesia (MUI).
+Despite regulatory progress, consumers and export markets continue to report trust gaps: counterfeit certificates, opaque supply chains, and limited ability to tie a retail product to a specific audited production batch~\cite{sidarto2021halal,rashid2018halal}.
+Similar concerns appear in cross-border halal trade, where importing countries cannot independently confirm that a label reflects the same batch that passed domestic certification~\cite{marianingsih2024halal,rejeb2018halal}.
+
+\subsection{Problem Statement}
+Three structural weaknesses motivate this work.
+\textbf{First}, paper-based or PDF certificates are \emph{copyable}---a forged document can appear authentic without access to an authoritative registry.
+\textbf{Second}, centralized traceability databases---including halal-specific platforms and generic food systems---concentrate write authority in administrators who can, in principle, alter historical records~\cite{kshetri2018blockchain,underwood2016blockchain,viriyasitavat2019blockchain}.
+\textbf{Third}, public blockchain traceability pilots (e.g., IBM Food Trust, VeChain) target enterprise supply chains and typically require wallet infrastructure, pricing out UMKM producers who dominate Indonesia's halal food sector~\cite{kamath2018blockchain,kamilaris2019blockchain}.
+
+Blockchain technology offers cryptographically secured, append-only records that support the design requirement of \emph{Amanah} (trustworthiness)---permanent, tamper-evident testimony of who approved what and when~\cite{zheng2020overview,christidis2016blockchain}.
+However, deploying full documents on Ethereum mainnet is economically infeasible for high-volume batch registration~\cite{benet2014ipfs,rejeb2020blockchain}.
+HalalChain addresses this tension by anchoring minimal on-chain state on Base L2~\cite{base2024docs,optimism2024spec} while storing rich evidence off-chain on IPFS, and by encoding auditor rejection and revision as first-class protocol states rather than off-ledger corrections.
 
 \subsection{Research Questions}
 \begin{enumerate}
-  \item Can a minimal smart contract architecture provide immutable halal batch verification at L2 cost levels accessible to UMKM (SME) producers?
-  \item How does an on-chain/off-chain (IPFS) split affect cost, immutability, and document availability?
-  \item Which Islamic ethical design requirements map to verifiable system properties?
+  \item \textbf{RQ1 (Cost and feasibility):} Can a minimal smart contract architecture provide immutable halal batch verification at L2 cost levels accessible to UMKM producers?
+  \item \textbf{RQ2 (Architecture tradeoffs):} How does an on-chain/off-chain (IPFS) split affect gas cost, immutability guarantees, and document availability?
+  \item \textbf{RQ3 (Ethical alignment):} Which Islamic ethical design requirements can be mapped to verifiable, testable system properties without conflating software behavior with religious rulings?
 \end{enumerate}
 
 \subsection{Contributions}
 This paper makes the following contributions:
 \begin{enumerate}
-  \item \textbf{HalalChain protocol design}---a three-role model (Producer, Auditor, Consumer) with OpenZeppelin role-based access control (RBAC) and on-chain revision history linking resubmissions to rejected batches.
-  \item \textbf{Architecture analysis}---a tradeoff study between on-chain anchors (content identifiers, status, timestamps) and off-chain documents (PDFs, lab reports) on IPFS~\cite{benet2014ipfs}.
-  \item \textbf{Ethical design mapping}---explicit traceability from Maqasid-aligned requirements (Section~\ref{sec:prelim}) to smart contract enforcement, framed as engineering requirements rather than religious rulings.
-  \item \textbf{Open implementation and evaluation framework}---reproducible codebase with qualitative security validation (Section~\ref{sec:eval-a}); empirical testnet benchmarks pending deployment (Section~\ref{sec:eval-b}).
+  \item \textbf{HalalChain protocol design}---a three-role model (Producer, Auditor, Consumer) with OpenZeppelin RBAC~\cite{openzeppelin2024access}, explicit batch lifecycle states, and on-chain revision history linking resubmissions to rejected parent batches.
+  \item \textbf{Architecture analysis}---a tradeoff study between on-chain anchors (CIDs, status, timestamps, auditor addresses) and off-chain documents on IPFS~\cite{benet2014ipfs,caro2018blockchain}, including consumer read paths that do not require wallets.
+  \item \textbf{Ethical design mapping}---traceability from Maqasid-aligned requirements (Section~\ref{sec:prelim}) to smart contract enforcement, framed as engineering requirements rather than fatwa.
+  \item \textbf{Open implementation and evaluation framework}---reproducible codebase with seven unit tests, three functional scenarios, and qualitative security validation (Section~\ref{sec:eval-a}); empirical Base Sepolia benchmarks reserved (Section~\ref{sec:eval-b}).
 \end{enumerate}
 
-\textit{Note:} The Introduction should be finalized after all sections are complete.
+\subsection{Paper Organization}
+Section~\ref{sec:related} reviews blockchain supply chain and halal traceability literature.
+Section~\ref{sec:prelim} establishes certification context and ethical design requirements.
+Sections~\ref{sec:design}--\ref{sec:implementation} describe architecture, contract specification, and web implementation.
+Section~\ref{sec:eval} presents evaluation; Section~\ref{sec:discussion} discusses limitations; Section~\ref{sec:conclusion} concludes.

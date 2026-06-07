@@ -5,32 +5,61 @@
 \begin{itemize}
   \item Solidity 0.8.20, Hardhat 3.7, OpenZeppelin Contracts 5.x
   \item Next.js 16.2, Wagmi 3.6, Viem 2.52
-  \item Node.js 20+ recommended
+  \item Node.js 20+ recommended; npm 10+
 \end{itemize}
 
+\subsection{Repository Layout}
+The repository is organized as follows (GitHub: \texttt{halal-chain}):
+
+\vspace{0.2em}
+\noindent\texttt{contracts/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+\texttt{HalalChain.sol}, unit tests, deploy and gas scripts
+
+\vspace{0.15em}
+\noindent\texttt{web/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+Next.js dashboards, IPFS upload API, contract ABI
+
+\vspace{0.15em}
+\noindent\texttt{docs/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+\texttt{EVALUATION.md}, \texttt{BASELINE.md}, localhost metrics
+
+\vspace{0.15em}
+\noindent\texttt{paper/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+IEEEtran source for this manuscript
+
 \subsection{Build and Test}
-\begin{verbatim}
+\begin{Code}
 cd contracts && npm install && npm test
-npm run node          # terminal 1
-npm run deploy:local  # terminal 2
+npm run node
+npm run deploy:local
 cd ../web && npm install && npm run dev
-\end{verbatim}
+\end{Code}
+Run \texttt{node} and \texttt{deploy:local} in separate terminals.
+Seven unit tests should pass.
+Default Hardhat account \#0 receives \texttt{DEFAULT\_ADMIN\_ROLE} on deploy; scripts grant producer and auditor roles to accounts \#1 and \#2 for local demos.
 
 \subsection{Base Sepolia Deployment}
 Configure \texttt{contracts/.env}:
-\begin{verbatim}
+\begin{Code}
 DEPLOYER_PRIVATE_KEY=0x...
 PRODUCER_ADDRESS=0x...
 AUDITOR_ADDRESS=0x...
-BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
-\end{verbatim}
-Then: \texttt{npm run deploy:base-sepolia} and \texttt{npm run evaluate:gas}.
+BASE_SEPOLIA_RPC_URL=
+  https://sepolia.base.org
+\end{Code}
+Then run \texttt{npm run deploy:base-sepolia} and \texttt{npm run evaluate:gas}.
+Fund the deployer via a Base Sepolia faucet before broadcasting transactions.
 
 \subsection{Record Placeholders}
 \begin{itemize}
-  \item Git commit hash: \texttt{9ccf8cd} (update before submission)
-  \item Contract address (Base Sepolia): TBD
-  \item Chain ID: 84532
+  \item Git commit hash: update before submission
+  \item Contract address (Base Sepolia): TBD after deployment
+  \item Chain ID: 84532 (Base Sepolia)
+  \item Frontend demo URL: TBD after Vercel deploy
 \end{itemize}
 
 See \texttt{docs/BASELINE.md} for Hardhat default wallet addresses used in local development.

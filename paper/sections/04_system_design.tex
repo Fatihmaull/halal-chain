@@ -2,30 +2,88 @@
 \label{sec:design}
 
 \subsection{Architecture Overview}
-Fig.~\ref{fig:arch} illustrates the HalalChain architecture.
-Producers upload supporting documents to IPFS and register a batch on Base L2; auditors verify or reject; consumers query batch status read-only via a web URL encoded in a QR code.
+Fig.~\ref{fig:arch} illustrates the HalalChain architecture across off-chain document storage and on-chain state anchoring.
+Producers upload supporting documents to IPFS via a server-side Pinata integration, obtain a CID, and call \texttt{registerBatch} on Base L2 with that CID.
+Auditors fetch documents through IPFS gateways, record decisions on-chain, and optionally attach audit report CIDs.
+Consumers query batch status read-only via \texttt{getBatch} through a JSON-RPC endpoint embedded in a web URL; QR codes encode this URL so scanning does not require wallet software.
 
 \input{figures/architecture}
 
+The design separates \emph{evidence} (large, mutable hosting on IPFS) from \emph{commitments} (small, replicated, immutable on L2).
+Table~\ref{tab:datasplit} summarizes the split.
+
+\begin{table}[t]
+  \caption{On-chain vs.\ off-chain data placement.}
+  \label{tab:datasplit}
+  \centering
+  \footnotesize
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.36\columnwidth}>{\raggedright\arraybackslash}p{0.18\columnwidth}X@{}}
+    \toprule
+    \textbf{Data} & \textbf{Location} & \textbf{Rationale} \\
+    \midrule
+    Batch status, timestamps & On-chain & Tamper-evident FSM \\
+    Producer/auditor addresses & On-chain & Accountability \\
+    IPFS CIDs & On-chain & Content-addressable anchor \\
+    Reject reason (string) & On-chain & Immutable audit trail \\
+    PDFs, images, lab reports & IPFS & Cost and size \\
+    Audit supporting files & IPFS & Same as producer docs \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
 \subsection{Batch Lifecycle}
-Batch status follows a finite state machine: Pending $\rightarrow$ Verified $|$ Rejected; Verified $\rightarrow$ Revoked.
-Rejected batches cannot be re-verified; producers submit a \emph{revision} as a new batch linked via \texttt{parentBatchId}, preserving audit history.
+Batch status follows a finite state machine (FSM) with five enumerated values: \texttt{Unknown}, \texttt{Pending}, \texttt{Verified}, \texttt{Rejected}, and \texttt{Revoked}.
+Table~\ref{tab:fsm} lists permitted transitions; all others revert at the contract layer.
+
+\begin{table}[t]
+  \caption{Batch status transitions enforced by \texttt{HalalChain.sol}.}
+  \label{tab:fsm}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.14\columnwidth}>{\raggedright\arraybackslash}p{0.20\columnwidth}>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{From} & \textbf{To} & \textbf{Trigger} \\
+    \midrule
+    --- & Pending & \makecell[tl]{\texttt{registerBatch},\\\texttt{registerRevision}} \\
+    Pending & Verified & \makecell[tl]{\texttt{verifyBatch}\\\textit{(auditor)}} \\
+    Pending & Rejected & \makecell[tl]{\texttt{rejectBatch}\\\textit{(auditor)}} \\
+    Verified & Revoked & \makecell[tl]{\texttt{revokeBatch}\\\textit{(auditor)}} \\
+    Rejected & Pending (new id) & \texttt{registerRevision} \\
+    Rejected & Verified & \emph{Forbidden} (reverts) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Rejected batches cannot be re-verified in place; producers submit a \emph{revision} as a new batch linked via \texttt{parentBatchId}, preserving the original rejection reason and audit metadata for inspection.
+Revocation applies only to previously Verified batches---for example, when post-market surveillance uncovers fraud---and records a reason string on-chain.
 
 \subsection{Smart Contract Specification}
-Contract \texttt{HalalChain.sol} (Solidity ${\hat{}}0.8.20$, OpenZeppelin AccessControl~\cite{openzeppelin2024access}) defines:
+Contract \texttt{HalalChain.sol} (Solidity ${\hat{}}0.8.20$, OpenZeppelin \texttt{AccessControl}~\cite{openzeppelin2024access}) defines role constants \texttt{PRODUCER\_ROLE}, \texttt{AUDITOR\_ROLE}, and \texttt{DEFAULT\_ADMIN\_ROLE}.
+Custom errors (\texttt{InvalidBatch}, \texttt{InvalidStatus}, \texttt{NotOriginalProducer}, \texttt{ParentNotRejected}) replace revert strings to save gas and improve integrator clarity.
 
-\textbf{Roles:} \texttt{PRODUCER\_ROLE}, \texttt{AUDITOR\_ROLE}, \texttt{DEFAULT\_ADMIN\_ROLE}.
-
-\textbf{Batch struct:} producer, productName, ipfsCid, createdAt, status, auditor, auditedAt, auditIpfsCid, rejectReason, parentBatchId.
+\textbf{Batch struct fields:}
+\texttt{producer}, \texttt{productName}, \texttt{ipfsCid}, \texttt{createdAt}, \texttt{status}, \texttt{auditor}, \texttt{auditedAt}, \texttt{auditIpfsCid}, \texttt{rejectReason}, \texttt{parentBatchId}.
 
 \textbf{Key functions:}
 \begin{itemize}
-  \item \texttt{registerBatch(productName, ipfsCid)} --- new batch, status Pending
-  \item \texttt{registerRevision(parentBatchId, ipfsCid)} --- revision after rejection
-  \item \texttt{verifyBatch(batchId, auditIpfsCid)} --- Pending $\rightarrow$ Verified
-  \item \texttt{rejectBatch(batchId, reason, auditIpfsCid)} --- Pending $\rightarrow$ Rejected
-  \item \texttt{revokeBatch(batchId, reason)} --- Verified $\rightarrow$ Revoked
+  \item \texttt{registerBatch(productName, ipfsCid)} --- creates batch with \texttt{parentBatchId = 0}, status Pending; emits \texttt{BatchRegistered}.
+  \item \texttt{registerRevision(parentBatchId, ipfsCid)} --- requires parent Rejected and \texttt{msg.sender == parent.producer}; inherits \texttt{productName}; emits event with parent link.
+  \item \texttt{verifyBatch(batchId, auditIpfsCid)} --- Pending $\rightarrow$ Verified; sets auditor fields; emits \texttt{BatchVerified}.
+  \item \texttt{rejectBatch(batchId, reason, auditIpfsCid)} --- Pending $\rightarrow$ Rejected; stores reason; emits \texttt{BatchRejected}.
+  \item \texttt{revokeBatch(batchId, reason)} --- Verified $\rightarrow$ Revoked; emits \texttt{BatchRevoked}.
+  \item \texttt{getBatch(batchId)} --- public view returning full struct; used by consumer page without transaction fees.
 \end{itemize}
 
-\subsection{Off-Chain Storage}
-Documents are pinned on IPFS via Pinata; only CIDs are stored on-chain~\cite{benet2014ipfs,christidis2016blockchain}, minimizing gas while preserving content-addressable integrity.
+Events are indexed on \texttt{batchId} and participant addresses where applicable, enabling block explorers and subgraph indexers to reconstruct audit timelines without proprietary APIs.
+
+\subsection{Off-Chain Storage and Integrity}
+Documents are pinned on IPFS via Pinata; only CIDs are stored on-chain~\cite{benet2014ipfs,christidis2016blockchain}.
+Integrity follows from content addressing: if a gateway returns bytes whose hash does not match the anchored CID, clients should treat the document as untrusted.
+Availability depends on pinning policy---unpinned CIDs may become unreachable even though on-chain references persist---a limitation analyzed in Section~\ref{sec:discussion}.
+The upload API never exposes Pinata JWT credentials to browsers; only the server-side Next.js route holds secrets.
+
+\subsection{Consumer Verification Path}
+Consumers access \texttt{/verify/\{batchId\}} on the deployed frontend.
+The page calls \texttt{getBatch} via a public RPC endpoint (Viem/Wagmi read client), renders status-specific UI (Verified / Pending / Rejected / Revoked), displays IPFS links for producer and audit documents, and shows \texttt{parentBatchId} when present.
+No private key material is loaded in the consumer route, satisfying the wallet-free requirement in Table~\ref{tab:related}.

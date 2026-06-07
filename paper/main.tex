@@ -13,31 +13,48 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{placeins}
+\usepackage{fancyvrb}
+\usepackage{fvextra}
 \usepackage{url}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
 \usepackage[hidelinks]{hyperref}
 
 %% Figures path
 \graphicspath{{figures/}}
+
+\DefineVerbatimEnvironment{Code}{Verbatim}{%
+  fontsize=\scriptsize,
+  breaklines=true,
+  breakanywhere=true,
+  xleftmargin=0pt,
+  xrightmargin=0pt
+}
 
 \begin{document}
 
 \title{HalalChain: A Trustless Batch Traceability Protocol on Base L2 Integrating Islamic Ethical Design Requirements with Immutable Audit Trails}
 
 \author{%
-  \IEEEauthorblockN{Author One\IEEEauthorrefmark{1},
-  Author Two\IEEEauthorrefmark{1}}
+  \IEEEauthorblockN{Muhammad Fatih Maulana\IEEEauthorrefmark{1},
+  Rio Ferdana Sudrajat\IEEEauthorrefmark{1},
+  Muhammad Rahardian Baihaqi\IEEEauthorrefmark{1},\\
+  Muhammad Fahriza Pratama\IEEEauthorrefmark{1},
+  Yazid Zinky Arisona\IEEEauthorrefmark{1},
+  and Muhammad Fauzan Lubada\IEEEauthorrefmark{1}}
   \IEEEauthorblockA{\IEEEauthorrefmark{1}%
-  Department of Computer Science, Universitas Islam Negeri Bandung, Bandung, Indonesia\\
-  Email: author@uinbdg.ac.id}
+  Universitas Islam Negeri Sunan Gunung Djati Bandung, Bandung, Indonesia}
 }
 
 \markboth{HalalChain: Batch Traceability on Base L2}{HalalChain: Batch Traceability on Base L2}
 
-\input{sections/00_abstract}
+\maketitle
 
-\IEEEpeerreviewmaketitle
+\input{sections/00_abstract}
 
 \input{sections/01_introduction}
 \input{sections/02_related_work}
@@ -49,8 +66,7 @@
 \input{sections/08_conclusion}
 
 \section*{Author Contributions}
-Author One: conceptualization, software, writing---original draft.
-Author Two: validation, writing---review and editing.
+Muhammad Fatih Maulana, Rio Ferdana Sudrajat, Muhammad Rahardian Baihaqi, Muhammad Fahriza Pratama, Yazid Zinky Arisona, and Muhammad Fauzan Lubada contributed to conceptualization, software development, validation, and writing.
 All authors have read and agreed to the published version of the manuscript.
 
 \section*{Data Availability Statement}

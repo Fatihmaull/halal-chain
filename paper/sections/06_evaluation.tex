@@ -1,38 +1,98 @@
 \section{Evaluation}
 \label{sec:eval}
 
-We structure evaluation into two tiers: qualitative analysis and functional validation (VI-A, available now), and quantitative testnet benchmarks (VI-B, pending Base Sepolia deployment).
+We structure evaluation into two tiers aligned with deployment maturity: (VI-A) qualitative analysis and functional validation available on local Hardhat networks today; and (VI-B) quantitative Base Sepolia benchmarks pending funded testnet deployment.
+This separation avoids conflating developer-machine measurements with public network costs~\cite{casino2021systematic}.
 
 \subsection{Qualitative Analysis and Functional Validation}
 \label{sec:eval-a}
 
 \subsubsection{Security Properties}
-\begin{itemize}
-  \item \textbf{Immutability:} Rejected batches cannot be re-verified; \texttt{verifyBatch} reverts with \texttt{InvalidStatus}.
-  \item \textbf{Revision traceability:} \texttt{parentBatchId} links resubmissions; original rejection reason remains queryable.
-  \item \textbf{Access control:} Unauthorized addresses cannot register or audit without assigned roles (verified by unit tests).
-\end{itemize}
+Table~\ref{tab:security} maps design requirements from Section~\ref{sec:prelim} to observable protocol behaviors validated by unit tests and manual scenario runs.
+
+\begin{table}[t]
+  \caption{Security properties and validation method.}
+  \label{tab:security}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.34\columnwidth}X@{}}
+    \toprule
+    \textbf{Property} & \textbf{Validation} \\
+    \midrule
+    Immutability of rejection & \texttt{verifyBatch} on Rejected reverts \\
+    Revision traceability & \texttt{parentBatchId} preserved; parent reason readable \\
+    Role separation & Non-producer cannot register; non-auditor cannot verify \\
+    Batch identity & Invalid \texttt{batchId} reverts on all mutators \\
+    Revocation integrity & Only Verified $\rightarrow$ Revoked permitted \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Immutability.}
+Once \texttt{rejectBatch} executes, \texttt{verifyBatch} on the same identifier reverts with \texttt{InvalidStatus}.
+Scenario~C (below) confirms that repeated verification attempts leave on-chain state unchanged---supporting \emph{Amanah}.
+
+\paragraph{Revision traceability.}
+\texttt{registerRevision} creates a new \texttt{batchId} while storing \texttt{parentBatchId}.
+Consumers inspecting a verified revision can navigate to the rejected parent and read its \texttt{rejectReason} and original \texttt{ipfsCid}, supporting audit transparency.
+
+\paragraph{Access control.}
+OpenZeppelin \texttt{onlyRole} modifiers gate mutating functions.
+Tests assert that unauthorized addresses cannot register, verify, reject, or revoke, addressing basic privilege escalation concerns in the v1 prototype.
 
 \subsubsection{Functional Scenarios}
-Three scenarios from \texttt{docs/EVALUATION.md} were validated on a local Hardhat network:
-\begin{enumerate}
-  \item \textbf{Scenario A:} Register $\rightarrow$ verify $\rightarrow$ consumer reads Verified status.
-  \item \textbf{Scenario B:} Register $\rightarrow$ reject $\rightarrow$ revision $\rightarrow$ verify; consumer sees parent batch link.
-  \item \textbf{Scenario C:} Double-verify on rejected batch reverts (tamper resistance).
-\end{enumerate}
-Local validation confirms protocol correctness; it does not substitute for public testnet benchmarks~\cite{casino2021systematic}.
+Three end-to-end scenarios from \texttt{docs/EVALUATION.md} were executed on a local Hardhat network with deployed contracts and the Next.js frontend:
+
+\paragraph{Scenario A (happy path).}
+Producer registers batch with IPFS documents $\rightarrow$ auditor verifies $\rightarrow$ consumer page displays Verified status and document links.
+Validates the primary UMKM-to-consumer trust path.
+
+\paragraph{Scenario B (rejection and revision).}
+Producer registers batch~1 $\rightarrow$ auditor rejects with reason $\rightarrow$ consumer page shows Rejected $\rightarrow$ producer submits \texttt{registerRevision} creating batch~2 $\rightarrow$ auditor verifies batch~2 $\rightarrow$ consumer sees Verified with parent link to batch~1.
+Validates revision FSM and UI linkage.
+
+\paragraph{Scenario C (tamper resistance).}
+After rejection of batch~1, a direct \texttt{verifyBatch(1)} call reverts.
+Subsequent \texttt{getBatch(1)} still returns \texttt{Rejected} with the original reason.
+Demonstrates that audit outcomes cannot be silently upgraded without a new batch identifier.
+
+Local validation confirms protocol correctness and UI integration; it does not substitute for public testnet latency, fee volatility, or Pinata production SLAs.
+
+\subsubsection{Development-Network Gas Observations}
+Hardhat localhost receipts provide \emph{preliminary} gas usage for contract sizing (Table~\ref{tab:gas-local}).
+These figures are \textbf{not} reported as Base Sepolia costs---opcode pricing and L1 data fees differ on rollups~\cite{optimism2024spec}.
+
+\begin{table}[t]
+  \caption{Preliminary gas on Hardhat localhost (development only; not Base Sepolia).}
+  \label{tab:gas-local}
+  \centering
+  \footnotesize
+  \begin{tabularx}{\columnwidth}{@{}Xr@{}}
+    \toprule
+    \textbf{Operation} & \textbf{Gas Used} \\
+    \midrule
+    \texttt{registerBatch} & 155{,}506 \\
+    \texttt{verifyBatch} & 79{,}214 \\
+    \texttt{rejectBatch} & 103{,}533 \\
+    \texttt{registerRevision} & 181{,}835 \\
+    \texttt{getBatch} (view) & 0 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 \subsection{Quantitative Testnet Benchmarks}
 \label{sec:eval-b}
 
-Table~\ref{tab:gas} will report gas usage and latency measured on Base Sepolia (chain ID 84532) after deployment.
-\textbf{No fabricated values are reported;} cells marked ``TBD'' await testnet transaction receipts.
+Table~\ref{tab:gas} will report gas usage, effective L2 fees, and end-to-end latency measured on Base Sepolia (chain ID 84532) after deployment with faucet-funded accounts.
+\textbf{No fabricated testnet values are reported;} cells marked ``TBD'' await on-chain transaction receipts from \texttt{npm run evaluate:gas}.
 
 \begin{table}[t]
   \caption{Gas and cost metrics on Base Sepolia (to be completed after deployment).}
   \label{tab:gas}
   \centering
-  \begin{tabular}{@{}lrr@{}}
+  \footnotesize
+  \begin{tabularx}{\columnwidth}{@{}Xrr@{}}
     \toprule
     \textbf{Operation} & \textbf{Gas Used} & \textbf{Cost (ETH)} \\
     \midrule
@@ -42,7 +102,8 @@ Table~\ref{tab:gas} will report gas usage and latency measured on Base Sepolia (
     \texttt{registerRevision} & TBD & TBD \\
     \texttt{getBatch} (RPC read) & 0 & 0 \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
-Run \texttt{npm run evaluate:gas} in \texttt{contracts/} after Base Sepolia deployment (see Appendix~\ref{app:repro}).
+Planned metrics additionally include: block confirmation time (registration $\rightarrow$ verification), IPFS upload duration via Pinata, and consumer page time-to-first-byte on Vercel hosting.
+Run \texttt{npm run evaluate:gas} in \texttt{contracts/} after Base Sepolia deployment (Appendix~\ref{app:repro}).

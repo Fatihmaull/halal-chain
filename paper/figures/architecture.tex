@@ -1,23 +1,64 @@
-\begin{figure}[t]
+\begin{figure}[!t]
   \centering
+  \resizebox{\columnwidth}{!}{%
   \begin{tikzpicture}[
-    node distance=0.9cm and 1.2cm,
-    box/.style={draw, rounded corners, minimum width=2.2cm, minimum height=0.7cm, align=center, font=\small},
-    store/.style={draw, cylinder, shape border rotate=90, aspect=0.25, minimum height=0.8cm, minimum width=1.2cm, align=center, font=\small},
-    arrow/.style={-{Stealth[length=2mm]}, thick}
+    font=\footnotesize,
+    >=Stealth,
+    actor/.style={
+      draw,
+      rounded corners=2pt,
+      line width=0.4pt,
+      fill=gray!6,
+      minimum width=2.05cm,
+      minimum height=0.9cm,
+      align=center,
+      inner sep=4pt
+    },
+    core/.style={
+      draw,
+      rounded corners=2pt,
+      line width=0.5pt,
+      fill=gray!14,
+      minimum width=2.35cm,
+      minimum height=0.95cm,
+      align=center,
+      inner sep=4pt
+    },
+    store/.style={
+      draw,
+      rounded corners=2pt,
+      line width=0.4pt,
+      fill=gray!10,
+      minimum width=2.05cm,
+      minimum height=0.9cm,
+      align=center,
+      inner sep=4pt
+    },
+    lbl/.style={
+      font=\scriptsize,
+      fill=white,
+      inner sep=1.5pt,
+      text=black
+    }
   ]
-    \node[box] (producer) {Producer\\UMKM};
-    \node[store, right=of producer] (ipfs) {IPFS\\Pinata};
-    \node[box, right=of ipfs] (chain) {Base L2\\HalalChain.sol};
-    \node[box, below=of chain] (auditor) {Auditor};
-    \node[box, left=of auditor] (consumer) {Consumer\\QR scan};
+    \node[actor] (producer) {Producer\\UMKM};
+    \node[store, right=1.25cm of producer] (ipfs) {IPFS\\Pinata};
+    \node[core] at ($(producer)!0.5!(ipfs) + (0,-1.45)$) (chain) {Base L2\\HalalChain.sol};
 
-    \draw[arrow] (producer) -- node[above, font=\scriptsize]{upload docs} (ipfs);
-    \draw[arrow] (producer) -- node[above, font=\scriptsize]{registerBatch} (chain);
-    \draw[arrow] (auditor) -- node[right, font=\scriptsize]{verify/reject} (chain);
-    \draw[arrow] (chain) -- node[below, font=\scriptsize]{getBatch} (consumer);
-    \draw[arrow, dashed] (ipfs) -- node[right, font=\scriptsize]{CID} (chain);
-  \end{tikzpicture}
+    \node[actor, below left=1.05cm and 0.55cm of chain] (consumer) {Consumer\\QR verify};
+    \node[actor, below right=1.05cm and 0.55cm of chain] (auditor) {Auditor};
+
+    \draw[->, thick] (producer.east) -- node[lbl, above]{upload docs} (ipfs.west);
+    \draw[->, thick] (producer.south) -- ++(0,-0.55) -|
+      node[lbl, pos=0.2, below]{registerBatch} (chain.west);
+
+    \draw[->, thick, dashed] (ipfs.south) -- node[lbl, right]{store CID} (chain.north);
+
+    \draw[->, thick] (chain.south west) -- node[lbl, left, pos=0.35]{read status} (consumer.north);
+    \draw[->, thick] (auditor.north) -- node[lbl, right, pos=0.35]{verify / reject} (chain.south east);
+
+  \end{tikzpicture}%
+  }
   \caption{HalalChain architecture: documents on IPFS, anchors and status on Base L2.}
   \label{fig:arch}
 \end{figure}

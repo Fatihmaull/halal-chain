@@ -2,29 +2,54 @@
 \label{sec:prelim}
 
 This section provides contextual background on halal certification trust gaps and derives \emph{engineering design requirements} from Islamic ethical principles.
-It does not constitute a religious ruling (fatwa); rather, it informs system design analogously to value-sensitive design~\cite{friedman2017value}.
+It does not constitute a religious ruling (fatwa); rather, it informs system design analogously to value-sensitive design, where moral considerations shape technical choices without replacing domain expertise~\cite{friedman2017value}.
 
-\subsection{Halal Certification Context}
-Indonesia's halal certification ecosystem involves BPJPH registration and MUI auditing for many product categories~\cite{sidarto2021halal,bpjph2022regulation}.
-Reported issues include certificate forgery and inability of consumers to independently verify batch-level claims at point of purchase~\cite{rashid2018halal,kshetri2018blockchain}.
+\subsection{Halal Certification Context in Indonesia}
+Indonesia's halal certification ecosystem involves BPJPH registration, product classification, and MUI auditing for many categories~\cite{sidarto2021halal,bpjph2022regulation}.
+Producers submit ingredient declarations, process descriptions, and supporting laboratory or supplier attestations.
+Upon approval, halal labels may be applied to specific products or production lines; export markets increasingly request traceability evidence beyond the label itself~\cite{marianingsih2024halal}.
+
+Reported issues include certificate forgery, relabeling of non-certified batches, and inability of consumers to independently verify batch-level claims at point of purchase~\cite{rashid2018halal,kshetri2018blockchain}.
+UMKM producers---small food manufacturers, home industries scaling up, and regional cooperatives---often lack IT staff to operate enterprise traceability suites.
+HalalChain therefore targets \emph{batch-level} attestation with minimal on-chain fields and a mobile-friendly consumer verify page.
+
+\subsection{Actors and Trust Boundaries}
+Four actor classes interact with the protocol:
+\begin{itemize}
+  \item \textbf{Producer (UMKM):} Registers batches and uploads evidence to IPFS; cannot self-verify halal status.
+  \item \textbf{Auditor:} Reviews evidence and transitions batch status to Verified, Rejected, or Revoked; actions are signed on-chain.
+  \item \textbf{Consumer:} Reads public batch status via QR-linked URL; does not hold keys or tokens.
+  \item \textbf{Administrator:} Grants \texttt{PRODUCER\_ROLE} and \texttt{AUDITOR\_ROLE}; a trust bottleneck discussed in Section~\ref{sec:discussion}.
+\end{itemize}
+The protocol does \emph{not} automatically validate ingredient chemistry or slaughter method; it records \emph{which auditor} approved \emph{which documents} at \emph{which time}, shifting trust from opaque databases to inspectable records.
 
 \subsection{From Principles to Design Requirements}
-Table~\ref{tab:ethics} maps selected principles to verifiable protocol properties.
+Islamic ethical principles inform \emph{what} the system should optimize for, expressed as testable properties.
+We select four principles frequently cited in halal supply chain literature and map them to HalalChain mechanisms in Table~\ref{tab:ethics}.
 
 \begin{table}[t]
   \caption{Mapping of ethical design requirements to HalalChain implementation.}
   \label{tab:ethics}
   \centering
-  \begin{tabular}{@{}llp{0.35\linewidth}@{}}
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.24\columnwidth}>{\raggedright\arraybackslash}p{0.26\columnwidth}X@{}}
     \toprule
     \textbf{Principle} & \textbf{Requirement} & \textbf{Implementation} \\
     \midrule
-    Amanah & Immutable audit record & On-chain status transitions \\
-    Thoyyib & Verified-only halal display & Status = Verified $\rightarrow$ consumer UI \\
-    Adl & Distributed data access & Public chain + IPFS \\
-    Hisba & Auditor accountability & \texttt{auditor} address + timestamp \\
+    Amanah (trustworthiness) & Immutable audit record & Append-only status transitions; rejected batches cannot be re-verified \\
+    Thoyyib (wholesomeness) & Verified-only halal display & Consumer UI shows certification only if \texttt{status = Verified} \\
+    Adl (justice) & Distributed data access & Public chain reads + IPFS gateways; no single vendor gate for status \\
+    Hisba (accountability) & Auditor attribution & \texttt{auditor} address, \texttt{auditedAt}, optional \texttt{auditIpfsCid} \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
-The current prototype grants \texttt{AUDITOR\_ROLE} via an administrator (OpenZeppelin \texttt{DEFAULT\_ADMIN\_ROLE}), which partially limits the \emph{Adl} property; Section~\ref{sec:discussion} discusses this limitation.
+\emph{Amanah} is operationalized by smart contract guards: once \texttt{rejectBatch} executes, \texttt{verifyBatch} on the same \texttt{batchId} reverts with \texttt{InvalidStatus}, preventing retroactive ``approval'' of a failed batch.
+\emph{Thoyyib} appears in the consumer dashboard, which renders a positive halal indicator only for Verified batches---Pending and Rejected states show explicit non-certified messaging in English and Indonesian.
+\emph{Adl} is partially satisfied by public read access but constrained because role assignment remains centralized under \texttt{DEFAULT\_ADMIN\_ROLE}.
+\emph{Hisba} binds each decision to an Ethereum address and block timestamp, enabling post-hoc accountability if an auditor key is known.
+
+The current prototype grants \texttt{AUDITOR\_ROLE} via an administrator (OpenZeppelin \texttt{DEFAULT\_ADMIN\_ROLE}), which partially limits \emph{Adl}; Section~\ref{sec:discussion} discusses multi-signature and DAO-based mitigations~\cite{gnosis2024safe}.
+
+\FloatBarrier
