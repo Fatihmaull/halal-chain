@@ -9,7 +9,9 @@
     "node": "hardhat node",
     "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
     "deploy:base-sepolia": "hardhat run scripts/deploy.ts --network baseSepolia",
-    "export-abi": "hardhat compile && hardhat run scripts/export-abi.ts"
+    "export-abi": "hardhat compile && hardhat run scripts/export-abi.ts",
+    "evaluate:gas": "hardhat run scripts/evaluate-gas.ts --network localhost",
+    "evaluate:gas:sepolia": "hardhat run scripts/evaluate-gas.ts --network baseSepolia"
   },
   "keywords": [],
   "author": "",

@@ -1,0 +1,31 @@
+\section{System Design}
+\label{sec:design}
+
+\subsection{Architecture Overview}
+Fig.~\ref{fig:arch} illustrates the HalalChain architecture.
+Producers upload supporting documents to IPFS and register a batch on Base L2; auditors verify or reject; consumers query batch status read-only via a web URL encoded in a QR code.
+
+\input{figures/architecture}
+
+\subsection{Batch Lifecycle}
+Batch status follows a finite state machine: Pending $\rightarrow$ Verified $|$ Rejected; Verified $\rightarrow$ Revoked.
+Rejected batches cannot be re-verified; producers submit a \emph{revision} as a new batch linked via \texttt{parentBatchId}, preserving audit history.
+
+\subsection{Smart Contract Specification}
+Contract \texttt{HalalChain.sol} (Solidity ${\hat{}}0.8.20$, OpenZeppelin AccessControl~\cite{openzeppelin2024access}) defines:
+
+\textbf{Roles:} \texttt{PRODUCER\_ROLE}, \texttt{AUDITOR\_ROLE}, \texttt{DEFAULT\_ADMIN\_ROLE}.
+
+\textbf{Batch struct:} producer, productName, ipfsCid, createdAt, status, auditor, auditedAt, auditIpfsCid, rejectReason, parentBatchId.
+
+\textbf{Key functions:}
+\begin{itemize}
+  \item \texttt{registerBatch(productName, ipfsCid)} --- new batch, status Pending
+  \item \texttt{registerRevision(parentBatchId, ipfsCid)} --- revision after rejection
+  \item \texttt{verifyBatch(batchId, auditIpfsCid)} --- Pending $\rightarrow$ Verified
+  \item \texttt{rejectBatch(batchId, reason, auditIpfsCid)} --- Pending $\rightarrow$ Rejected
+  \item \texttt{revokeBatch(batchId, reason)} --- Verified $\rightarrow$ Revoked
+\end{itemize}
+
+\subsection{Off-Chain Storage}
+Documents are pinned on IPFS via Pinata; only CIDs are stored on-chain~\cite{benet2014ipfs,saad2020ipfs}, minimizing gas while preserving content-addressable integrity.

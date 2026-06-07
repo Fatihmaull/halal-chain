@@ -1,0 +1,23 @@
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.9cm and 1.2cm,
+    box/.style={draw, rounded corners, minimum width=2.2cm, minimum height=0.7cm, align=center, font=\small},
+    store/.style={draw, cylinder, shape border rotate=90, aspect=0.25, minimum height=0.8cm, minimum width=1.2cm, align=center, font=\small},
+    arrow/.style={-{Stealth[length=2mm]}, thick}
+  ]
+    \node[box] (producer) {Producer\\UMKM};
+    \node[store, right=of producer] (ipfs) {IPFS\\Pinata};
+    \node[box, right=of ipfs] (chain) {Base L2\\HalalChain.sol};
+    \node[box, below=of chain] (auditor) {Auditor};
+    \node[box, left=of auditor] (consumer) {Consumer\\QR scan};
+
+    \draw[arrow] (producer) -- node[above, font=\scriptsize]{upload docs} (ipfs);
+    \draw[arrow] (producer) -- node[above, font=\scriptsize]{registerBatch} (chain);
+    \draw[arrow] (auditor) -- node[right, font=\scriptsize]{verify/reject} (chain);
+    \draw[arrow] (chain) -- node[below, font=\scriptsize]{getBatch} (consumer);
+    \draw[arrow, dashed] (ipfs) -- node[right, font=\scriptsize]{CID} (chain);
+  \end{tikzpicture}
+  \caption{HalalChain architecture: documents on IPFS, anchors and status on Base L2.}
+  \label{fig:arch}
+\end{figure}

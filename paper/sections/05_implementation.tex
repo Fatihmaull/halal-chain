@@ -1,0 +1,38 @@
+\section{Implementation}
+\label{sec:implementation}
+
+Table~\ref{tab:stack} summarizes the technology stack.
+The open-source repository is available at \url{https://github.com/Fatihmaull/halal-chain}.
+
+\begin{table}[t]
+  \caption{HalalChain implementation stack.}
+  \label{tab:stack}
+  \centering
+  \begin{tabular}{@{}ll@{}}
+    \toprule
+    \textbf{Layer} & \textbf{Technology} \\
+    \midrule
+    Blockchain & Solidity 0.8.20, OpenZeppelin, Base Sepolia \\
+    Development & Hardhat 3, Mocha/Chai (7 tests) \\
+    Frontend & Next.js 16, Wagmi v3, Viem, Tailwind \\
+    Storage & IPFS via Pinata (server-side upload API) \\
+    Deployment & Hardhat scripts, Vercel (frontend) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Smart Contracts}
+The contract implements RBAC with \texttt{AccessControl}, replacing a single-owner auditor mapping.
+Unit tests cover registration, verification, rejection, revision, revocation, unauthorized access, and invalid batch identifiers.
+
+\subsection{Web Application}
+Three dashboards serve distinct roles:
+\begin{itemize}
+  \item \textbf{Producer} --- multi-step registration, IPFS upload, QR code generation, batch history
+  \item \textbf{Auditor} --- pending queue, document review links, verify/reject/revoke with confirmation
+  \item \textbf{Consumer} --- \texttt{/verify/\{batchId\}} read-only page; bilingual EN/ID; no wallet required
+\end{itemize}
+
+\subsection{IPFS Upload}
+A Next.js API route (\texttt{POST /api/ipfs/upload}) pins files via Pinata JWT server-side.
+A development mock mode generates deterministic local CIDs when Pinata is not configured; benchmarks use real Pinata pins only (Section~\ref{sec:eval-b}).

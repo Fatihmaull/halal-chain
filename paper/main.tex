@@ -1,0 +1,68 @@
+%% HalalChain IEEE Journal Paper
+%% Build: make pdf  (requires TeX Live with IEEEtran)
+%% Overleaf: use "IEEE Journal Template" and copy sections/
+
+\documentclass[journal]{IEEEtran}
+
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+\usepackage[hidelinks]{hyperref}
+
+%% Figures path
+\graphicspath{{figures/}}
+
+\begin{document}
+
+\title{HalalChain: A Trustless Batch Traceability Protocol on Base L2 Integrating Islamic Ethical Design Requirements with Immutable Audit Trails}
+
+\author{%
+  \IEEEauthorblockN{Author One\IEEEauthorrefmark{1},
+  Author Two\IEEEauthorrefmark{1}}
+  \IEEEauthorblockA{\IEEEauthorrefmark{1}%
+  Department of Computer Science, Universitas Islam Negeri Bandung, Bandung, Indonesia\\
+  Email: author@uinbdg.ac.id}
+}
+
+\markboth{HalalChain: Batch Traceability on Base L2}{HalalChain: Batch Traceability on Base L2}
+
+\input{sections/00_abstract}
+
+\IEEEpeerreviewmaketitle
+
+\input{sections/01_introduction}
+\input{sections/02_related_work}
+\input{sections/03_preliminaries}
+\input{sections/04_system_design}
+\input{sections/05_implementation}
+\input{sections/06_evaluation}
+\input{sections/07_discussion}
+\input{sections/08_conclusion}
+
+\section*{Author Contributions}
+Author One: conceptualization, software, writing---original draft.
+Author Two: validation, writing---review and editing.
+All authors have read and agreed to the published version of the manuscript.
+
+\section*{Data Availability Statement}
+Source code, smart contracts, and evaluation scripts are available at \url{https://github.com/Fatihmaull/halal-chain}.
+
+\section*{Conflict of Interest}
+The authors declare no conflict of interest.
+
+\appendices
+\input{sections/appendix_reproducibility}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

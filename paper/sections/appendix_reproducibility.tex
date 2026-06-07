@@ -1,0 +1,36 @@
+\section{Reproducibility}
+\label{app:repro}
+
+\subsection{Software Versions}
+\begin{itemize}
+  \item Solidity 0.8.20, Hardhat 3.7, OpenZeppelin Contracts 5.x
+  \item Next.js 16.2, Wagmi 3.6, Viem 2.52
+  \item Node.js 20+ recommended
+\end{itemize}
+
+\subsection{Build and Test}
+\begin{verbatim}
+cd contracts && npm install && npm test
+npm run node          # terminal 1
+npm run deploy:local  # terminal 2
+cd ../web && npm install && npm run dev
+\end{verbatim}
+
+\subsection{Base Sepolia Deployment}
+Configure \texttt{contracts/.env}:
+\begin{verbatim}
+DEPLOYER_PRIVATE_KEY=0x...
+PRODUCER_ADDRESS=0x...
+AUDITOR_ADDRESS=0x...
+BASE_SEPOLIA_RPC_URL=https://sepolia.base.org
+\end{verbatim}
+Then: \texttt{npm run deploy:base-sepolia} and \texttt{npm run evaluate:gas}.
+
+\subsection{Record Placeholders}
+\begin{itemize}
+  \item Git commit hash: \texttt{9ccf8cd} (update before submission)
+  \item Contract address (Base Sepolia): TBD
+  \item Chain ID: 84532
+\end{itemize}
+
+See \texttt{docs/BASELINE.md} for Hardhat default wallet addresses used in local development.

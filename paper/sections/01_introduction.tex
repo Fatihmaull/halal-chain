@@ -1,0 +1,24 @@
+\section{Introduction}
+\label{sec:intro}
+
+Halal certification in Indonesia is governed by the Badan Penyelenggara Jaminan Produk Halal (BPJPH) and the Majelis Ulama Indonesia (MUI), yet consumers and export markets continue to report trust gaps~\cite{tieman2019halal}.
+Physical certificates can be forged; centralized enterprise databases can be altered by administrators~\cite{bendhaou2021blockchain}.
+Blockchain technology offers cryptographically secured, append-only records that support the design requirement of \emph{Amanah} (trustworthiness)---permanent, tamper-evident testimony~\cite{zheng2020overview}.
+
+\subsection{Research Questions}
+\begin{enumerate}
+  \item Can a minimal smart contract architecture provide immutable halal batch verification at L2 cost levels accessible to UMKM (SME) producers?
+  \item How does an on-chain/off-chain (IPFS) split affect cost, immutability, and document availability?
+  \item Which Islamic ethical design requirements map to verifiable system properties?
+\end{enumerate}
+
+\subsection{Contributions}
+This paper makes the following contributions:
+\begin{enumerate}
+  \item \textbf{HalalChain protocol design}---a three-role model (Producer, Auditor, Consumer) with OpenZeppelin role-based access control (RBAC) and on-chain revision history linking resubmissions to rejected batches.
+  \item \textbf{Architecture analysis}---a tradeoff study between on-chain anchors (content identifiers, status, timestamps) and off-chain documents (PDFs, lab reports) on IPFS~\cite{benet2014ipfs}.
+  \item \textbf{Ethical design mapping}---explicit traceability from Maqasid-aligned requirements (Section~\ref{sec:prelim}) to smart contract enforcement, framed as engineering requirements rather than religious rulings.
+  \item \textbf{Open implementation and evaluation framework}---reproducible codebase with qualitative security validation (Section~\ref{sec:eval-a}); empirical testnet benchmarks pending deployment (Section~\ref{sec:eval-b}).
+\end{enumerate}
+
+\textit{Note:} The Introduction should be finalized after all sections are complete.

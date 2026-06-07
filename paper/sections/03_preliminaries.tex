@@ -1,0 +1,30 @@
+\section{Preliminaries: Halal Trust Context and Ethical Design Requirements}
+\label{sec:prelim}
+
+This section provides contextual background on halal certification trust gaps and derives \emph{engineering design requirements} from Islamic ethical principles.
+It does not constitute a religious ruling (fatwa); rather, it informs system design analogously to value-sensitive design~\cite{friedman2017value}.
+
+\subsection{Halal Certification Context}
+Indonesia's halal certification ecosystem involves BPJPH registration and MUI auditing for many product categories~\cite{tieman2019halal}.
+Reported issues include certificate forgery and inability of consumers to independently verify batch-level claims at point of purchase~\cite{bendhaou2021blockchain}.
+
+\subsection{From Principles to Design Requirements}
+Table~\ref{tab:ethics} maps selected principles to verifiable protocol properties.
+
+\begin{table}[t]
+  \caption{Mapping of ethical design requirements to HalalChain implementation.}
+  \label{tab:ethics}
+  \centering
+  \begin{tabular}{@{}llp{0.35\linewidth}@{}}
+    \toprule
+    \textbf{Principle} & \textbf{Requirement} & \textbf{Implementation} \\
+    \midrule
+    Amanah & Immutable audit record & On-chain status transitions \\
+    Thoyyib & Verified-only halal display & Status = Verified $\rightarrow$ consumer UI \\
+    Adl & Distributed data access & Public chain + IPFS \\
+    Hisba & Auditor accountability & \texttt{auditor} address + timestamp \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The current prototype grants \texttt{AUDITOR\_ROLE} via an administrator (OpenZeppelin \texttt{DEFAULT\_ADMIN\_ROLE}), which partially limits the \emph{Adl} property; Section~\ref{sec:discussion} discusses this limitation.

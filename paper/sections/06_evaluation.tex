@@ -1,0 +1,48 @@
+\section{Evaluation}
+\label{sec:eval}
+
+We structure evaluation into two tiers: qualitative analysis and functional validation (VI-A, available now), and quantitative testnet benchmarks (VI-B, pending Base Sepolia deployment).
+
+\subsection{Qualitative Analysis and Functional Validation}
+\label{sec:eval-a}
+
+\subsubsection{Security Properties}
+\begin{itemize}
+  \item \textbf{Immutability:} Rejected batches cannot be re-verified; \texttt{verifyBatch} reverts with \texttt{InvalidStatus}.
+  \item \textbf{Revision traceability:} \texttt{parentBatchId} links resubmissions; original rejection reason remains queryable.
+  \item \textbf{Access control:} Unauthorized addresses cannot register or audit without assigned roles (verified by unit tests).
+\end{itemize}
+
+\subsubsection{Functional Scenarios}
+Three scenarios from \texttt{docs/EVALUATION.md} were validated on a local Hardhat network:
+\begin{enumerate}
+  \item \textbf{Scenario A:} Register $\rightarrow$ verify $\rightarrow$ consumer reads Verified status.
+  \item \textbf{Scenario B:} Register $\rightarrow$ reject $\rightarrow$ revision $\rightarrow$ verify; consumer sees parent batch link.
+  \item \textbf{Scenario C:} Double-verify on rejected batch reverts (tamper resistance).
+\end{enumerate}
+Local validation confirms protocol correctness; it does not substitute for public testnet benchmarks~\cite{casino2021systematic}.
+
+\subsection{Quantitative Testnet Benchmarks}
+\label{sec:eval-b}
+
+Table~\ref{tab:gas} will report gas usage and latency measured on Base Sepolia (chain ID 84532) after deployment.
+\textbf{No fabricated values are reported;} cells marked ``TBD'' await testnet transaction receipts.
+
+\begin{table}[t]
+  \caption{Gas and cost metrics on Base Sepolia (to be completed after deployment).}
+  \label{tab:gas}
+  \centering
+  \begin{tabular}{@{}lrr@{}}
+    \toprule
+    \textbf{Operation} & \textbf{Gas Used} & \textbf{Cost (ETH)} \\
+    \midrule
+    \texttt{registerBatch} & TBD & TBD \\
+    \texttt{verifyBatch} & TBD & TBD \\
+    \texttt{rejectBatch} & TBD & TBD \\
+    \texttt{registerRevision} & TBD & TBD \\
+    \texttt{getBatch} (RPC read) & 0 & 0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Run \texttt{npm run evaluate:gas} in \texttt{contracts/} after Base Sepolia deployment (see Appendix~\ref{app:repro}).

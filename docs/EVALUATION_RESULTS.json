@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-06-07T04:53:20.538Z",
+  "network": "localhost",
+  "note": "LOCAL DEV ONLY — do not publish as Base Sepolia results. Re-run with --network baseSepolia after deploy.",
+  "operations": {
+    "registerBatch": {
+      "gasUsed": "155506",
+      "network": "localhost"
+    },
+    "verifyBatch": {
+      "gasUsed": "79214",
+      "network": "localhost"
+    },
+    "registerBatch_2": {
+      "gasUsed": "155446",
+      "network": "localhost"
+    },
+    "rejectBatch": {
+      "gasUsed": "103533",
+      "network": "localhost"
+    },
+    "registerRevision": {
+      "gasUsed": "181835",
+      "network": "localhost"
+    }
+  }
+}

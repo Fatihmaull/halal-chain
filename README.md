@@ -106,7 +106,9 @@ Faucet: [Alchemy Base Sepolia](https://www.alchemy.com/faucets/base-sepolia)
 |---------|-----|
 | [`docs/BASELINE.md`](docs/BASELINE.md) | Setup lokal + wallet addresses |
 | [`docs/EVALUATION.md`](docs/EVALUATION.md) | Skenario evaluasi + metrik untuk paper |
-| [`docs/HalalChain_Article_Draft.md`](docs/HalalChain_Article_Draft.md) | Draft artikel akademik |
+| [`docs/EVALUATION_RESULTS.md`](docs/EVALUATION_RESULTS.md) | Hasil evaluasi gas (localhost dev; Sepolia pending) |
+| [`docs/HalalChain_Article_Draft.md`](docs/HalalChain_Article_Draft.md) | Draft artikel (Markdown) |
+| [`paper/`](paper/) | **IEEEtran LaTeX paper** — build with `make pdf` |
 
 ---
 
