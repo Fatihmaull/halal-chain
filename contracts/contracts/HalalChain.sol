@@ -1,19 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+
 /**
- * HalalChain (minimal v1)
- * - Producer registers a batch (with IPFS CID for supporting docs).
- * - Auditor verifies or rejects the batch (immutable audit trail).
- *
- * NOTE: This is a bootstrap contract matching the PRD shape, not final governance/roles.
+ * HalalChain v1 — batch traceability with RBAC and revision history.
+ * - PRODUCER_ROLE: register batches and submit revisions after rejection.
+ * - AUDITOR_ROLE: verify, reject, or revoke batches.
+ * - DEFAULT_ADMIN_ROLE: grant/revoke roles.
  */
-contract HalalChain {
+contract HalalChain is AccessControl {
+    bytes32 public constant PRODUCER_ROLE = keccak256("PRODUCER_ROLE");
+    bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
+
     enum Status {
         Unknown,
         Pending,
         Verified,
-        Rejected
+        Rejected,
+        Revoked
     }
 
     struct Batch {
@@ -24,50 +29,66 @@ contract HalalChain {
         Status status;
         address auditor;
         uint256 auditedAt;
-        string auditIpfsCid; // optional audit report CID
-        string rejectReason; // optional
+        string auditIpfsCid;
+        string rejectReason;
+        uint256 parentBatchId;
     }
-
-    address public immutable owner;
-    mapping(address => bool) public isAuditor;
 
     uint256 public nextBatchId = 1;
     mapping(uint256 => Batch) private batches;
 
-    event AuditorSet(address indexed auditor, bool allowed);
-    event BatchRegistered(uint256 indexed batchId, address indexed producer, string ipfsCid);
+    event BatchRegistered(
+        uint256 indexed batchId,
+        address indexed producer,
+        string ipfsCid,
+        uint256 parentBatchId
+    );
     event BatchVerified(uint256 indexed batchId, address indexed auditor, string auditIpfsCid);
-    event BatchRejected(uint256 indexed batchId, address indexed auditor, string reason, string auditIpfsCid);
+    event BatchRejected(
+        uint256 indexed batchId,
+        address indexed auditor,
+        string reason,
+        string auditIpfsCid
+    );
+    event BatchRevoked(uint256 indexed batchId, address indexed auditor, string reason);
 
-    error NotOwner();
-    error NotAuditor();
-    error NotProducer();
     error InvalidBatch();
     error InvalidStatus();
+    error NotOriginalProducer();
+    error ParentNotRejected();
 
     constructor() {
-        owner = msg.sender;
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
-    modifier onlyOwner() {
-        if (msg.sender != owner) revert NotOwner();
-        _;
+    function registerBatch(
+        string calldata productName,
+        string calldata ipfsCid
+    ) external onlyRole(PRODUCER_ROLE) returns (uint256 batchId) {
+        batchId = _createBatch(msg.sender, productName, ipfsCid, 0);
     }
 
-    modifier onlyAuditor() {
-        if (!isAuditor[msg.sender]) revert NotAuditor();
-        _;
+    function registerRevision(
+        uint256 parentBatchId,
+        string calldata ipfsCid
+    ) external onlyRole(PRODUCER_ROLE) returns (uint256 batchId) {
+        if (parentBatchId == 0 || parentBatchId >= nextBatchId) revert InvalidBatch();
+        Batch storage parent = batches[parentBatchId];
+        if (parent.producer != msg.sender) revert NotOriginalProducer();
+        if (parent.status != Status.Rejected) revert ParentNotRejected();
+
+        batchId = _createBatch(msg.sender, parent.productName, ipfsCid, parentBatchId);
     }
 
-    function setAuditor(address auditor, bool allowed) external onlyOwner {
-        isAuditor[auditor] = allowed;
-        emit AuditorSet(auditor, allowed);
-    }
-
-    function registerBatch(string calldata productName, string calldata ipfsCid) external returns (uint256 batchId) {
+    function _createBatch(
+        address producer,
+        string memory productName,
+        string memory ipfsCid,
+        uint256 parentBatchId
+    ) internal returns (uint256 batchId) {
         batchId = nextBatchId++;
         batches[batchId] = Batch({
-            producer: msg.sender,
+            producer: producer,
             productName: productName,
             ipfsCid: ipfsCid,
             createdAt: block.timestamp,
@@ -75,9 +96,10 @@ contract HalalChain {
             auditor: address(0),
             auditedAt: 0,
             auditIpfsCid: "",
-            rejectReason: ""
+            rejectReason: "",
+            parentBatchId: parentBatchId
         });
-        emit BatchRegistered(batchId, msg.sender, ipfsCid);
+        emit BatchRegistered(batchId, producer, ipfsCid, parentBatchId);
     }
 
     function getBatch(uint256 batchId) external view returns (Batch memory) {
@@ -85,7 +107,10 @@ contract HalalChain {
         return batches[batchId];
     }
 
-    function verifyBatch(uint256 batchId, string calldata auditIpfsCid) external onlyAuditor {
+    function verifyBatch(
+        uint256 batchId,
+        string calldata auditIpfsCid
+    ) external onlyRole(AUDITOR_ROLE) {
         if (batchId == 0 || batchId >= nextBatchId) revert InvalidBatch();
         Batch storage b = batches[batchId];
         if (b.status != Status.Pending) revert InvalidStatus();
@@ -102,7 +127,7 @@ contract HalalChain {
         uint256 batchId,
         string calldata reason,
         string calldata auditIpfsCid
-    ) external onlyAuditor {
+    ) external onlyRole(AUDITOR_ROLE) {
         if (batchId == 0 || batchId >= nextBatchId) revert InvalidBatch();
         Batch storage b = batches[batchId];
         if (b.status != Status.Pending) revert InvalidStatus();
@@ -115,5 +140,17 @@ contract HalalChain {
 
         emit BatchRejected(batchId, msg.sender, reason, auditIpfsCid);
     }
-}
 
+    function revokeBatch(uint256 batchId, string calldata reason) external onlyRole(AUDITOR_ROLE) {
+        if (batchId == 0 || batchId >= nextBatchId) revert InvalidBatch();
+        Batch storage b = batches[batchId];
+        if (b.status != Status.Verified) revert InvalidStatus();
+
+        b.status = Status.Revoked;
+        b.auditor = msg.sender;
+        b.auditedAt = block.timestamp;
+        b.rejectReason = reason;
+
+        emit BatchRevoked(batchId, msg.sender, reason);
+    }
+}

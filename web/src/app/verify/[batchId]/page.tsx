@@ -2,25 +2,24 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { isAddress } from "viem";
-import { useReadContract } from "wagmi";
-import { halalChainAbi } from "@/lib/halalChainAbi";
+import { useChainId } from "wagmi";
+import { useI18n } from "@/lib/I18nProvider";
+import {
+  ipfsGatewayUrl,
+  statusColors,
+  statusKey,
+  statusDescKey,
+  basescanUrl,
+} from "@/lib/batchUtils";
+import { useBatch } from "@/lib/useBatches";
 import { getHalalChainAddress } from "@/lib/contract";
-
-function statusLabel(status?: number) {
-  switch (status) {
-    case 1:
-      return "Pending";
-    case 2:
-      return "Verified";
-    case 3:
-      return "Rejected";
-    default:
-      return "Unknown";
-  }
-}
+import { AppHeader } from "@/components/ui";
 
 export default function VerifyBatchPage({ params }: { params: { batchId: string } }) {
+  const { t } = useI18n();
+  const chainId = useChainId();
+  const contractAddress = getHalalChainAddress();
+
   const batchId = useMemo(() => {
     try {
       return BigInt(params.batchId);
@@ -29,87 +28,107 @@ export default function VerifyBatchPage({ params }: { params: { batchId: string 
     }
   }, [params.batchId]);
 
-  const address = getHalalChainAddress();
-  const canQuery = Boolean(address && isAddress(address) && batchId && batchId > 0n);
+  const { batch, loading, error } = useBatch(batchId);
 
-  const { data, isLoading, error } = useReadContract({
-    abi: halalChainAbi,
-    address: address!,
-    functionName: "getBatch",
-    args: canQuery ? [batchId!] : undefined,
-    query: { enabled: canQuery },
-  });
-
-  const batch = data as
-    | {
-        producer: `0x${string}`;
-        productName: string;
-        ipfsCid: string;
-        createdAt: bigint;
-        status: number;
-        auditor: `0x${string}`;
-        auditedAt: bigint;
-        auditIpfsCid: string;
-        rejectReason: string;
-      }
-    | undefined;
+  const status = batch?.status ?? 0;
+  const statusLabel = t(statusKey(status));
+  const statusDesc = t(statusDescKey(status));
 
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
-      <header className="border-b border-black/10 dark:border-white/10">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6 py-4">
-          <Link className="font-semibold tracking-tight" href="/">
-            HalalChain
-          </Link>
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">Verifikasi batch</div>
-        </div>
-      </header>
+      <AppHeader subtitle={t("verifyBatch")} />
 
-      <main className="mx-auto w-full max-w-3xl px-6 py-10">
+      <main className="mx-auto w-full max-w-lg px-6 py-10">
         <div className="rounded-2xl border border-black/10 bg-white p-8 dark:border-white/10 dark:bg-zinc-950">
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">Batch ID</div>
-          <div className="mt-1 text-2xl font-semibold tracking-tight">#{params.batchId}</div>
+          <div className="text-sm text-zinc-600 dark:text-zinc-400">{t("batchId")}</div>
+          <div className="mt-1 text-3xl font-bold tracking-tight">#{params.batchId}</div>
 
-          {!address && (
-            <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-900/40 dark:bg-amber-950/40 dark:text-amber-100">
-              Set dulu environment variable <span className="font-mono">NEXT_PUBLIC_HALALCHAIN_ADDRESS</span> di{" "}
-              <span className="font-mono">web</span> biar halaman ini bisa baca data kontrak.
+          {!contractAddress && (
+            <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+              Set <span className="font-mono">NEXT_PUBLIC_HALALCHAIN_ADDRESS</span> in web/.env.local
             </div>
           )}
 
-          {isLoading && <div className="mt-6 text-sm text-zinc-600 dark:text-zinc-400">Loading data on-chain…</div>}
+          {loading && <div className="mt-6 text-sm text-zinc-600">{t("loading")}</div>}
 
           {error && (
-            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-100">
-              {String(error.message || error)}
+            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+              {t("notFound")}
             </div>
           )}
 
           {batch && (
-            <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-              <Field label="Status" value={statusLabel(batch.status)} />
-              <Field label="Product" value={batch.productName || "-"} />
-              <Field label="Producer" value={batch.producer} mono />
-              <Field label="Docs CID" value={batch.ipfsCid || "-"} mono />
-              <Field label="Auditor" value={batch.auditor} mono />
-              <Field label="Audit CID" value={batch.auditIpfsCid || "-"} mono />
-              <div className="sm:col-span-2">
-                <Field label="Reject reason" value={batch.rejectReason || "-"} />
+            <>
+              <div className={`mt-6 rounded-2xl border p-6 text-center ${statusColors(status)}`}>
+                <div className="text-2xl font-bold">{statusLabel}</div>
+                <p className="mt-2 text-sm opacity-80">{statusDesc}</p>
               </div>
-            </dl>
+
+              <dl className="mt-6 grid gap-3 text-sm">
+                <InfoRow label={t("product")} value={batch.productName || "-"} />
+                {batch.parentBatchId > 0n && (
+                  <div>
+                    <dt className="text-xs uppercase text-zinc-500">{t("parentBatch")}</dt>
+                    <dd className="mt-1">
+                      <Link className="text-emerald-600 underline" href={`/verify/${batch.parentBatchId}`}>
+                        #{String(batch.parentBatchId)}
+                      </Link>
+                    </dd>
+                  </div>
+                )}
+                {batch.ipfsCid && ipfsGatewayUrl(batch.ipfsCid) && (
+                  <div>
+                    <a
+                      className="inline-flex h-10 items-center rounded-full bg-black/5 px-4 text-sm font-medium hover:bg-black/10 dark:bg-white/10"
+                      href={ipfsGatewayUrl(batch.ipfsCid)!}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t("viewDocuments")}
+                    </a>
+                  </div>
+                )}
+                {batch.auditIpfsCid && ipfsGatewayUrl(batch.auditIpfsCid) && (
+                  <div>
+                    <a
+                      className="inline-flex h-10 items-center rounded-full bg-black/5 px-4 text-sm font-medium hover:bg-black/10 dark:bg-white/10"
+                      href={ipfsGatewayUrl(batch.auditIpfsCid)!}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t("viewAudit")}
+                    </a>
+                  </div>
+                )}
+                {batch.rejectReason && <InfoRow label={t("rejectReason")} value={batch.rejectReason} />}
+                {contractAddress && basescanUrl(contractAddress, chainId) && (
+                  <div>
+                    <a
+                      className="text-sm text-zinc-500 underline"
+                      href={basescanUrl(contractAddress, chainId)!}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {t("basescan")}
+                    </a>
+                  </div>
+                )}
+              </dl>
+            </>
           )}
         </div>
+
+        <p className="mt-6 text-center text-xs text-zinc-500">Powered by Base · HalalChain</p>
       </main>
     </div>
   );
 }
 
-function Field({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-black/10 bg-zinc-50 p-4 dark:border-white/10 dark:bg-black">
-      <dt className="text-xs uppercase tracking-wide text-zinc-500 dark:text-zinc-500">{label}</dt>
-      <dd className={`mt-1 text-sm ${mono ? "font-mono" : ""}`}>{value}</dd>
+      <dt className="text-xs uppercase text-zinc-500">{label}</dt>
+      <dd className="mt-1">{value}</dd>
     </div>
   );
 }
-

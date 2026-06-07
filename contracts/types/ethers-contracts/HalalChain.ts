@@ -6,53 +6,57 @@ import type { TypedContractEvent, TypedDeferredTopicFilter, TypedEventLog, Typed
   
 export declare namespace HalalChain {
       
-    export type BatchStruct = {producer: AddressLike, productName: string, ipfsCid: string, createdAt: BigNumberish, status: BigNumberish, auditor: AddressLike, auditedAt: BigNumberish, auditIpfsCid: string, rejectReason: string}
+    export type BatchStruct = {producer: AddressLike, productName: string, ipfsCid: string, createdAt: BigNumberish, status: BigNumberish, auditor: AddressLike, auditedAt: BigNumberish, auditIpfsCid: string, rejectReason: string, parentBatchId: BigNumberish}
 
-    export type BatchStructOutput = [producer: string, productName: string, ipfsCid: string, createdAt: bigint, status: bigint, auditor: string, auditedAt: bigint, auditIpfsCid: string, rejectReason: string] & {producer: string, productName: string, ipfsCid: string, createdAt: bigint, status: bigint, auditor: string, auditedAt: bigint, auditIpfsCid: string, rejectReason: string }
+    export type BatchStructOutput = [producer: string, productName: string, ipfsCid: string, createdAt: bigint, status: bigint, auditor: string, auditedAt: bigint, auditIpfsCid: string, rejectReason: string, parentBatchId: bigint] & {producer: string, productName: string, ipfsCid: string, createdAt: bigint, status: bigint, auditor: string, auditedAt: bigint, auditIpfsCid: string, rejectReason: string, parentBatchId: bigint }
   
     }
 
   export interface HalalChainInterface extends Interface {
-    getFunction(nameOrSignature: "getBatch" | "isAuditor" | "nextBatchId" | "owner" | "registerBatch" | "rejectBatch" | "setAuditor" | "verifyBatch"): FunctionFragment;
+    getFunction(nameOrSignature: "AUDITOR_ROLE" | "DEFAULT_ADMIN_ROLE" | "PRODUCER_ROLE" | "getBatch" | "getRoleAdmin" | "grantRole" | "hasRole" | "nextBatchId" | "registerBatch" | "registerRevision" | "rejectBatch" | "renounceRole" | "revokeBatch" | "revokeRole" | "supportsInterface" | "verifyBatch"): FunctionFragment;
 
-    getEvent(nameOrSignatureOrTopic: "AuditorSet" | "BatchRegistered" | "BatchRejected" | "BatchVerified"): EventFragment;
+    getEvent(nameOrSignatureOrTopic: "BatchRegistered" | "BatchRejected" | "BatchRevoked" | "BatchVerified" | "RoleAdminChanged" | "RoleGranted" | "RoleRevoked"): EventFragment;
 
-    encodeFunctionData(functionFragment: 'getBatch', values: [BigNumberish]): string;
-encodeFunctionData(functionFragment: 'isAuditor', values: [AddressLike]): string;
+    encodeFunctionData(functionFragment: 'AUDITOR_ROLE', values?: undefined): string;
+encodeFunctionData(functionFragment: 'DEFAULT_ADMIN_ROLE', values?: undefined): string;
+encodeFunctionData(functionFragment: 'PRODUCER_ROLE', values?: undefined): string;
+encodeFunctionData(functionFragment: 'getBatch', values: [BigNumberish]): string;
+encodeFunctionData(functionFragment: 'getRoleAdmin', values: [BytesLike]): string;
+encodeFunctionData(functionFragment: 'grantRole', values: [BytesLike, AddressLike]): string;
+encodeFunctionData(functionFragment: 'hasRole', values: [BytesLike, AddressLike]): string;
 encodeFunctionData(functionFragment: 'nextBatchId', values?: undefined): string;
-encodeFunctionData(functionFragment: 'owner', values?: undefined): string;
 encodeFunctionData(functionFragment: 'registerBatch', values: [string, string]): string;
+encodeFunctionData(functionFragment: 'registerRevision', values: [BigNumberish, string]): string;
 encodeFunctionData(functionFragment: 'rejectBatch', values: [BigNumberish, string, string]): string;
-encodeFunctionData(functionFragment: 'setAuditor', values: [AddressLike, boolean]): string;
+encodeFunctionData(functionFragment: 'renounceRole', values: [BytesLike, AddressLike]): string;
+encodeFunctionData(functionFragment: 'revokeBatch', values: [BigNumberish, string]): string;
+encodeFunctionData(functionFragment: 'revokeRole', values: [BytesLike, AddressLike]): string;
+encodeFunctionData(functionFragment: 'supportsInterface', values: [BytesLike]): string;
 encodeFunctionData(functionFragment: 'verifyBatch', values: [BigNumberish, string]): string;
 
-    decodeFunctionResult(functionFragment: 'getBatch', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'isAuditor', data: BytesLike): Result;
+    decodeFunctionResult(functionFragment: 'AUDITOR_ROLE', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'DEFAULT_ADMIN_ROLE', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'PRODUCER_ROLE', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'getBatch', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'getRoleAdmin', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'grantRole', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'hasRole', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'nextBatchId', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'owner', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'registerBatch', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'registerRevision', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'rejectBatch', data: BytesLike): Result;
-decodeFunctionResult(functionFragment: 'setAuditor', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'renounceRole', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'revokeBatch', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'revokeRole', data: BytesLike): Result;
+decodeFunctionResult(functionFragment: 'supportsInterface', data: BytesLike): Result;
 decodeFunctionResult(functionFragment: 'verifyBatch', data: BytesLike): Result;
   }
 
   
-    export namespace AuditorSetEvent {
-      export type InputTuple = [auditor: AddressLike, allowed: boolean];
-      export type OutputTuple = [auditor: string, allowed: boolean];
-      export interface OutputObject {auditor: string, allowed: boolean };
-      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
-      export type Filter = TypedDeferredTopicFilter<Event>
-      export type Log = TypedEventLog<Event>
-      export type LogDescription = TypedLogDescription<Event>
-    }
-
-  
-
     export namespace BatchRegisteredEvent {
-      export type InputTuple = [batchId: BigNumberish, producer: AddressLike, ipfsCid: string];
-      export type OutputTuple = [batchId: bigint, producer: string, ipfsCid: string];
-      export interface OutputObject {batchId: bigint, producer: string, ipfsCid: string };
+      export type InputTuple = [batchId: BigNumberish, producer: AddressLike, ipfsCid: string, parentBatchId: BigNumberish];
+      export type OutputTuple = [batchId: bigint, producer: string, ipfsCid: string, parentBatchId: bigint];
+      export interface OutputObject {batchId: bigint, producer: string, ipfsCid: string, parentBatchId: bigint };
       export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
       export type Filter = TypedDeferredTopicFilter<Event>
       export type Log = TypedEventLog<Event>
@@ -73,10 +77,58 @@ decodeFunctionResult(functionFragment: 'verifyBatch', data: BytesLike): Result;
 
   
 
+    export namespace BatchRevokedEvent {
+      export type InputTuple = [batchId: BigNumberish, auditor: AddressLike, reason: string];
+      export type OutputTuple = [batchId: bigint, auditor: string, reason: string];
+      export interface OutputObject {batchId: bigint, auditor: string, reason: string };
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
     export namespace BatchVerifiedEvent {
       export type InputTuple = [batchId: BigNumberish, auditor: AddressLike, auditIpfsCid: string];
       export type OutputTuple = [batchId: bigint, auditor: string, auditIpfsCid: string];
       export interface OutputObject {batchId: bigint, auditor: string, auditIpfsCid: string };
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
+    export namespace RoleAdminChangedEvent {
+      export type InputTuple = [role: BytesLike, previousAdminRole: BytesLike, newAdminRole: BytesLike];
+      export type OutputTuple = [role: string, previousAdminRole: string, newAdminRole: string];
+      export interface OutputObject {role: string, previousAdminRole: string, newAdminRole: string };
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
+    export namespace RoleGrantedEvent {
+      export type InputTuple = [role: BytesLike, account: AddressLike, sender: AddressLike];
+      export type OutputTuple = [role: string, account: string, sender: string];
+      export interface OutputObject {role: string, account: string, sender: string };
+      export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
+      export type Filter = TypedDeferredTopicFilter<Event>
+      export type Log = TypedEventLog<Event>
+      export type LogDescription = TypedLogDescription<Event>
+    }
+
+  
+
+    export namespace RoleRevokedEvent {
+      export type InputTuple = [role: BytesLike, account: AddressLike, sender: AddressLike];
+      export type OutputTuple = [role: string, account: string, sender: string];
+      export interface OutputObject {role: string, account: string, sender: string };
       export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>
       export type Filter = TypedDeferredTopicFilter<Event>
       export type Log = TypedEventLog<Event>
@@ -119,6 +171,30 @@ decodeFunctionResult(functionFragment: 'verifyBatch', data: BytesLike): Result;
 
     
     
+    AUDITOR_ROLE: TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >
+    
+
+    
+    DEFAULT_ADMIN_ROLE: TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >
+    
+
+    
+    PRODUCER_ROLE: TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >
+    
+
+    
     getBatch: TypedContractMethod<
       [batchId: BigNumberish, ],
       [HalalChain.BatchStructOutput],
@@ -127,8 +203,24 @@ decodeFunctionResult(functionFragment: 'verifyBatch', data: BytesLike): Result;
     
 
     
-    isAuditor: TypedContractMethod<
-      [arg0: AddressLike, ],
+    getRoleAdmin: TypedContractMethod<
+      [role: BytesLike, ],
+      [string],
+      'view'
+    >
+    
+
+    
+    grantRole: TypedContractMethod<
+      [role: BytesLike, account: AddressLike, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    hasRole: TypedContractMethod<
+      [role: BytesLike, account: AddressLike, ],
       [boolean],
       'view'
     >
@@ -143,16 +235,16 @@ decodeFunctionResult(functionFragment: 'verifyBatch', data: BytesLike): Result;
     
 
     
-    owner: TypedContractMethod<
-      [],
-      [string],
-      'view'
+    registerBatch: TypedContractMethod<
+      [productName: string, ipfsCid: string, ],
+      [bigint],
+      'nonpayable'
     >
     
 
     
-    registerBatch: TypedContractMethod<
-      [productName: string, ipfsCid: string, ],
+    registerRevision: TypedContractMethod<
+      [parentBatchId: BigNumberish, ipfsCid: string, ],
       [bigint],
       'nonpayable'
     >
@@ -167,10 +259,34 @@ decodeFunctionResult(functionFragment: 'verifyBatch', data: BytesLike): Result;
     
 
     
-    setAuditor: TypedContractMethod<
-      [auditor: AddressLike, allowed: boolean, ],
+    renounceRole: TypedContractMethod<
+      [role: BytesLike, callerConfirmation: AddressLike, ],
       [void],
       'nonpayable'
+    >
+    
+
+    
+    revokeBatch: TypedContractMethod<
+      [batchId: BigNumberish, reason: string, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    revokeRole: TypedContractMethod<
+      [role: BytesLike, account: AddressLike, ],
+      [void],
+      'nonpayable'
+    >
+    
+
+    
+    supportsInterface: TypedContractMethod<
+      [interfaceId: BytesLike, ],
+      [boolean],
+      'view'
     >
     
 
@@ -185,13 +301,38 @@ decodeFunctionResult(functionFragment: 'verifyBatch', data: BytesLike): Result;
 
     getFunction<T extends ContractMethod = ContractMethod>(key: string | FunctionFragment): T;
 
-    getFunction(nameOrSignature: 'getBatch'): TypedContractMethod<
+    getFunction(nameOrSignature: 'AUDITOR_ROLE'): TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >;
+getFunction(nameOrSignature: 'DEFAULT_ADMIN_ROLE'): TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >;
+getFunction(nameOrSignature: 'PRODUCER_ROLE'): TypedContractMethod<
+      [],
+      [string],
+      'view'
+    >;
+getFunction(nameOrSignature: 'getBatch'): TypedContractMethod<
       [batchId: BigNumberish, ],
       [HalalChain.BatchStructOutput],
       'view'
     >;
-getFunction(nameOrSignature: 'isAuditor'): TypedContractMethod<
-      [arg0: AddressLike, ],
+getFunction(nameOrSignature: 'getRoleAdmin'): TypedContractMethod<
+      [role: BytesLike, ],
+      [string],
+      'view'
+    >;
+getFunction(nameOrSignature: 'grantRole'): TypedContractMethod<
+      [role: BytesLike, account: AddressLike, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'hasRole'): TypedContractMethod<
+      [role: BytesLike, account: AddressLike, ],
       [boolean],
       'view'
     >;
@@ -200,13 +341,13 @@ getFunction(nameOrSignature: 'nextBatchId'): TypedContractMethod<
       [bigint],
       'view'
     >;
-getFunction(nameOrSignature: 'owner'): TypedContractMethod<
-      [],
-      [string],
-      'view'
-    >;
 getFunction(nameOrSignature: 'registerBatch'): TypedContractMethod<
       [productName: string, ipfsCid: string, ],
+      [bigint],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'registerRevision'): TypedContractMethod<
+      [parentBatchId: BigNumberish, ipfsCid: string, ],
       [bigint],
       'nonpayable'
     >;
@@ -215,10 +356,25 @@ getFunction(nameOrSignature: 'rejectBatch'): TypedContractMethod<
       [void],
       'nonpayable'
     >;
-getFunction(nameOrSignature: 'setAuditor'): TypedContractMethod<
-      [auditor: AddressLike, allowed: boolean, ],
+getFunction(nameOrSignature: 'renounceRole'): TypedContractMethod<
+      [role: BytesLike, callerConfirmation: AddressLike, ],
       [void],
       'nonpayable'
+    >;
+getFunction(nameOrSignature: 'revokeBatch'): TypedContractMethod<
+      [batchId: BigNumberish, reason: string, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'revokeRole'): TypedContractMethod<
+      [role: BytesLike, account: AddressLike, ],
+      [void],
+      'nonpayable'
+    >;
+getFunction(nameOrSignature: 'supportsInterface'): TypedContractMethod<
+      [interfaceId: BytesLike, ],
+      [boolean],
+      'view'
     >;
 getFunction(nameOrSignature: 'verifyBatch'): TypedContractMethod<
       [batchId: BigNumberish, auditIpfsCid: string, ],
@@ -226,18 +382,17 @@ getFunction(nameOrSignature: 'verifyBatch'): TypedContractMethod<
       'nonpayable'
     >;
 
-    getEvent(key: 'AuditorSet'): TypedContractEvent<AuditorSetEvent.InputTuple, AuditorSetEvent.OutputTuple, AuditorSetEvent.OutputObject>;
-getEvent(key: 'BatchRegistered'): TypedContractEvent<BatchRegisteredEvent.InputTuple, BatchRegisteredEvent.OutputTuple, BatchRegisteredEvent.OutputObject>;
+    getEvent(key: 'BatchRegistered'): TypedContractEvent<BatchRegisteredEvent.InputTuple, BatchRegisteredEvent.OutputTuple, BatchRegisteredEvent.OutputObject>;
 getEvent(key: 'BatchRejected'): TypedContractEvent<BatchRejectedEvent.InputTuple, BatchRejectedEvent.OutputTuple, BatchRejectedEvent.OutputObject>;
+getEvent(key: 'BatchRevoked'): TypedContractEvent<BatchRevokedEvent.InputTuple, BatchRevokedEvent.OutputTuple, BatchRevokedEvent.OutputObject>;
 getEvent(key: 'BatchVerified'): TypedContractEvent<BatchVerifiedEvent.InputTuple, BatchVerifiedEvent.OutputTuple, BatchVerifiedEvent.OutputObject>;
+getEvent(key: 'RoleAdminChanged'): TypedContractEvent<RoleAdminChangedEvent.InputTuple, RoleAdminChangedEvent.OutputTuple, RoleAdminChangedEvent.OutputObject>;
+getEvent(key: 'RoleGranted'): TypedContractEvent<RoleGrantedEvent.InputTuple, RoleGrantedEvent.OutputTuple, RoleGrantedEvent.OutputObject>;
+getEvent(key: 'RoleRevoked'): TypedContractEvent<RoleRevokedEvent.InputTuple, RoleRevokedEvent.OutputTuple, RoleRevokedEvent.OutputObject>;
 
     filters: {
       
-      'AuditorSet(address,bool)': TypedContractEvent<AuditorSetEvent.InputTuple, AuditorSetEvent.OutputTuple, AuditorSetEvent.OutputObject>;
-      AuditorSet: TypedContractEvent<AuditorSetEvent.InputTuple, AuditorSetEvent.OutputTuple, AuditorSetEvent.OutputObject>;
-    
-
-      'BatchRegistered(uint256,address,string)': TypedContractEvent<BatchRegisteredEvent.InputTuple, BatchRegisteredEvent.OutputTuple, BatchRegisteredEvent.OutputObject>;
+      'BatchRegistered(uint256,address,string,uint256)': TypedContractEvent<BatchRegisteredEvent.InputTuple, BatchRegisteredEvent.OutputTuple, BatchRegisteredEvent.OutputObject>;
       BatchRegistered: TypedContractEvent<BatchRegisteredEvent.InputTuple, BatchRegisteredEvent.OutputTuple, BatchRegisteredEvent.OutputObject>;
     
 
@@ -245,8 +400,24 @@ getEvent(key: 'BatchVerified'): TypedContractEvent<BatchVerifiedEvent.InputTuple
       BatchRejected: TypedContractEvent<BatchRejectedEvent.InputTuple, BatchRejectedEvent.OutputTuple, BatchRejectedEvent.OutputObject>;
     
 
+      'BatchRevoked(uint256,address,string)': TypedContractEvent<BatchRevokedEvent.InputTuple, BatchRevokedEvent.OutputTuple, BatchRevokedEvent.OutputObject>;
+      BatchRevoked: TypedContractEvent<BatchRevokedEvent.InputTuple, BatchRevokedEvent.OutputTuple, BatchRevokedEvent.OutputObject>;
+    
+
       'BatchVerified(uint256,address,string)': TypedContractEvent<BatchVerifiedEvent.InputTuple, BatchVerifiedEvent.OutputTuple, BatchVerifiedEvent.OutputObject>;
       BatchVerified: TypedContractEvent<BatchVerifiedEvent.InputTuple, BatchVerifiedEvent.OutputTuple, BatchVerifiedEvent.OutputObject>;
+    
+
+      'RoleAdminChanged(bytes32,bytes32,bytes32)': TypedContractEvent<RoleAdminChangedEvent.InputTuple, RoleAdminChangedEvent.OutputTuple, RoleAdminChangedEvent.OutputObject>;
+      RoleAdminChanged: TypedContractEvent<RoleAdminChangedEvent.InputTuple, RoleAdminChangedEvent.OutputTuple, RoleAdminChangedEvent.OutputObject>;
+    
+
+      'RoleGranted(bytes32,address,address)': TypedContractEvent<RoleGrantedEvent.InputTuple, RoleGrantedEvent.OutputTuple, RoleGrantedEvent.OutputObject>;
+      RoleGranted: TypedContractEvent<RoleGrantedEvent.InputTuple, RoleGrantedEvent.OutputTuple, RoleGrantedEvent.OutputObject>;
+    
+
+      'RoleRevoked(bytes32,address,address)': TypedContractEvent<RoleRevokedEvent.InputTuple, RoleRevokedEvent.OutputTuple, RoleRevokedEvent.OutputObject>;
+      RoleRevoked: TypedContractEvent<RoleRevokedEvent.InputTuple, RoleRevokedEvent.OutputTuple, RoleRevokedEvent.OutputObject>;
     
     };
   }
