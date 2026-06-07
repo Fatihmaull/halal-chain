@@ -1,34 +1,29 @@
 bib_key,title,year,venue,type,doi,verified,used_in_section,peer_reviewed,notes
-bendhaou2021blockchain,Blockchain-based supply chain traceability,2021,Computers & Industrial Engineering,journal,10.1016/j.cie.2021.107652,yes,02_related_work,yes,State-of-the-art review
-casino2021systematic,Systematic literature review of blockchain applications,2021,Telematics and Informatics,journal,10.1016/j.tele.2020.101507,yes,02_related_work,yes,
-kamilaris2019blockchain,Blockchain in agriculture and food supply chains,2019,Trends in Food Science & Technology,journal,10.1016/j.tifs.2019.07.034,yes,02_related_work,yes,
-feng2020tracing,Fresh agricultural products traceability,2020,Food Control,journal,10.1016/j.foodcont.2020.107417,yes,02_related_work,yes,
-tieman2019halal,Halal supply chain integrity,2019,British Food Journal,journal,10.1108/BFJ-02-2019-0122,yes,03_preliminaries,yes,
-ali2020halal,Halal food industry potential,2020,Journal of Islamic Marketing,journal,10.1108/JIMA-05-2019-0105,yes,02_related_work,yes,
-hashim2022blockchain,Blockchain for halal food traceability review,2022,JIABR,journal,10.1108/JIABA-03-2021-0089,yes,02_related_work,yes,Direct halal blockchain review
-nawir2021blockchain,Blockchain-based halal food traceability,2021,IEEE Access,journal,10.1109/ACCESS.2021.3111005,yes,02_related_work,yes,Key competitor system
-razali2022halal,Halal food traceability using blockchain,2022,J Food Sci Technol,journal,10.1007/s13197-021-05345-6,yes,02_related_work,yes,
-malik2020halal,Halal supply chain management review,2020,Journal of Islamic Marketing,journal,10.1108/JIMA-04-2019-0076,yes,02_related_work,yes,
-zheng2020overview,Overview on smart contracts,2020,Future Generation Computer Systems,journal,10.1016/j.future.2019.12.019,yes,01_introduction,yes,
-saad2020ipfs,Blockchain evaluation framework for IPFS,2020,IEEE Access,journal,10.1109/ACCESS.2020.3002018,yes,02_related_work,yes,
-xiang2021blockchain,Blockchain-based IPFS access scheme,2021,Security and Communication Networks,journal,10.1155/2021/9957080,yes,02_related_work,yes,
-benet2014ipfs,IPFS whitepaper,2014,arXiv,preprint,,yes,04_system_design,no,Technical reference
-andoni2019blockchain,Blockchain in energy sector review,2019,Renewable and Sustainable Energy Reviews,journal,10.1016/j.rser.2018.10.014,yes,02_related_work,yes,
-biswas2019blockchain,Blockchain RFID authentication in SCM,2019,Future Generation Computer Systems,journal,10.1016/j.future.2018.12.053,yes,02_related_work,yes,
-kalodner2018arbitrum,Arbitrum scalable smart contracts,2018,USENIX Security,conference,,yes,02_related_work,yes,L2 cost motivation
-optimism2024spec,OP Stack Specification,2024,Optimism docs,tech report,,yes,02_related_work,no,
-base2024docs,Base Network Documentation,2024,Base docs,tech report,,yes,05_implementation,no,
-openzeppelin2024access,OpenZeppelin AccessControl,2024,OpenZeppelin docs,tech report,,yes,04_system_design,no,
-friedman2017value,Value Sensitive Design,2019,MIT Press,book,10.7551/mitpress/7585.001.0001,yes,03_preliminaries,yes,Ethics framing
-dinarstandard2023state,State of Global Islamic Economy,2023,DinarStandard,report,,partial,01_introduction,no,Market size stat - verify latest edition
-bpjph2022regulation,Indonesia Halal Product Assurance Law,2014,Gov of Indonesia,standard,,partial,03_preliminaries,no,Regulatory context
-gnosis2024safe,Safe Multisig Documentation,2024,Gnosis docs,tech report,,yes,07_discussion,no,Future work
-christidis2016blockchain,Blockchains and smart contracts for IoT,2016,IEEE Access,journal,10.1109/ACCESS.2016.2566339,yes,02_related_work,yes,
-lu2019blockchain,Integrating blockchain with enterprise SCM,2021,IEEE TEM,journal,10.1109/TEM.2019.2924014,yes,02_related_work,yes,
-wang2020blockchain,Blockchain logistics traceability food safety,2020,IEEE TEM,journal,10.1109/TEM.2019.2895624,yes,02_related_work,yes,
-kshetri2018blockchain,Blockchain roles in SCM objectives,2018,Int J Info Management,journal,10.1016/j.ijinfomgt.2017.12.005,yes,02_related_work,yes,
-abdullah2020maqasid,Maqasid al-Shariah framework for Islamic finance,2020,IMEFM,journal,10.1108/IMEFM-05-2019-0225,yes,03_preliminaries,yes,
-perumal2021halal,Blockchain adoption in SCM review,2021,Sustainability,journal,10.3390/su13169147,yes,02_related_work,yes,
-yan2020blockchain,Blockchain in food supply chains survey,2020,Journal of Cleaner Production,journal,10.1016/j.jclepro.2020.121608,yes,02_related_work,yes,
-galvez2018future,Blockchain technology for food traceability,2018,Computers & Industrial Engineering,journal,10.1016/j.cie.2018.03.039,yes,02_related_work,yes,
-mandolla2019blockchain,Blockchain traceability for agri-food,2019,BPM Journal,journal,10.1108/BPMJ-08-2017-0219,yes,02_related_work,yes,
+sidarto2021halal,Halal poultry traceability blockchain Indonesia,2021,Frontiers in Blockchain,journal,10.3389/fbloc.2021.612898,yes,01_intro;02_related;03_prelim,yes,CrossRef verified
+alourani2025halal,Halal food traceability AI and blockchain,2025,Journal of Posthumanism,journal,10.63332/joph.v5i2.437,yes,02_related,yes,CrossRef verified
+marianingsih2024halal,AI-blockchain halal cross-border certification,2024,LangTech,journal,10.53515/lt.v7i2.165,yes,02_related,yes,CrossRef verified (year may show 2026 online)
+rejeb2018halal,Halal meat HACCP blockchain IoT,2018,Acta Technica Jaurinensis,journal,10.14513/actatechjaur.v11.n4.467,yes,02_related,yes,CrossRef verified
+rashid2018halal,Halal traceability adoption and supply chain integrity,2018,Int J Asian Social Science,journal,10.18488/journal.1.2018.88.569.579,yes,01_intro;02_related;03_prelim,yes,CrossRef verified
+casino2021systematic,Systematic literature review of blockchain applications,2019,Telematics and Informatics,journal,10.1016/j.tele.2018.11.006,yes,02_related;06_eval,yes,CrossRef verified
+kamilaris2019blockchain,Blockchain in agriculture and food supply chains,2019,Trends in Food Science & Technology,journal,10.1016/j.tifs.2019.07.034,yes,02_related,yes,CrossRef verified
+rejeb2020blockchain,Blockchain technology in the food industry review,2020,Logistics,journal,10.3390/logistics4040027,yes,02_related,yes,CrossRef verified
+kamath2018blockchain,Walmart pork mango blockchain pilots,2018,JBBA,journal,10.31585/jbba-1-1-(10)2018,yes,02_related,yes,CrossRef verified
+zheng2020overview,Overview on smart contracts,2020,Future Generation Computer Systems,journal,10.1016/j.future.2019.12.019,yes,01_intro,yes,CrossRef verified
+benet2014ipfs,IPFS whitepaper,2014,arXiv,preprint,,yes,01_intro;02_related;04_design,no,arXiv:1407.3561
+andoni2019blockchain,Blockchain in energy sector review,2019,Renewable and Sustainable Energy Reviews,journal,10.1016/j.rser.2018.10.014,yes,02_related,yes,CrossRef verified
+kouhizadeh2018blockchain,Blockchain in green supply chains,2018,Sustainability,journal,10.3390/su10103652,yes,02_related,yes,CrossRef verified
+kalodner2018arbitrum,Arbitrum scalable smart contracts,2018,USENIX Security,conference,,yes,02_related,yes,USENIX URL valid
+optimism2024spec,OP Stack Specification,2024,Optimism docs,tech report,,n-a,02_related,no,Web documentation
+base2024docs,Base Network Documentation,2024,Base docs,tech report,,n-a,05_implementation,no,Web documentation
+openzeppelin2024access,OpenZeppelin AccessControl,2024,OpenZeppelin docs,tech report,,n-a,04_system_design,no,Web documentation
+friedman2017value,Value Sensitive Design,2019,MIT Press,book,10.7551/mitpress/7585.001.0001,yes,03_prelim,yes,CrossRef verified
+dinarstandard2023state,State of Global Islamic Economy,2023,DinarStandard,report,,partial,01_intro,no,Industry report
+bpjph2022regulation,Indonesia Halal Product Assurance Law,2014,Gov of Indonesia,standard,,partial,03_prelim,no,Legal/regulatory reference
+gnosis2024safe,Safe Multisig Documentation,2024,Gnosis docs,tech report,,n-a,07_discussion,no,Web documentation
+christidis2016blockchain,Blockchains and smart contracts for IoT,2016,IEEE Access,journal,10.1109/ACCESS.2016.2566339,yes,02_related;04_design,yes,CrossRef verified
+kshetri2018blockchain,Blockchain roles in SCM objectives,2018,Int J Info Management,journal,10.1016/j.ijinfomgt.2017.12.005,yes,01_intro;02_related;03_prelim,yes,CrossRef verified
+galvez2018future,Blockchain for food traceability analysis,2018,TrAC Trends in Analytical Chemistry,journal,10.1016/j.trac.2018.08.011,yes,02_related,yes,CrossRef verified
+abeyratne2016blockchain,Blockchain ready manufacturing supply chain,2016,IJRET,journal,10.15623/ijret.2016.0509001,yes,02_related,yes,CrossRef verified
+viriyasitavat2019blockchain,Blockchain characteristics and consensus,2019,Journal of Industrial Information Integration,journal,10.1016/j.jii.2018.07.004,yes,07_discussion,yes,CrossRef verified
+caro2018blockchain,Blockchain agri-food traceability implementation,2018,IoT Agriculture Summit,conference,10.1109/iot-tuscany.2018.8373021,yes,02_related,yes,Fixed DOI from subagent audit
+underwood2016blockchain,Blockchain beyond bitcoin,2016,Communications of the ACM,journal,10.1145/2994581,yes,01_intro;07_discussion,yes,Fixed DOI from subagent audit
