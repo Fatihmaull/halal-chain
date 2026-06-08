@@ -1,27 +1,44 @@
 {
-  "timestamp": "2026-06-07T04:53:20.538Z",
-  "network": "localhost",
-  "note": "LOCAL DEV ONLY — do not publish as Base Sepolia results. Re-run with --network baseSepolia after deploy.",
+  "timestamp": "2026-06-08T12:18:25.325Z",
+  "network": "sepolia",
+  "chainId": 11155111,
+  "contractAddress": "0x0Ccf5d905787E5E7EA698469fAe38a1517Ff8c29",
+  "note": "Ethereum Sepolia results — verify on Etherscan before adding to paper.",
   "operations": {
     "registerBatch": {
       "gasUsed": "155506",
-      "network": "localhost"
+      "effectiveGasPriceGwei": "5.039463848",
+      "costEth": "0.000783666865147088",
+      "txHash": "0x01a143174afa3da72f9e5da9d54dbee302db45e13748a674bdc38e21425e96c1",
+      "network": "sepolia"
     },
     "verifyBatch": {
       "gasUsed": "79214",
-      "network": "localhost"
+      "effectiveGasPriceGwei": "4.397186741",
+      "costEth": "0.000348318750501574",
+      "txHash": "0x4bd2c2aec7c5f77e1de0445285f39f0b17fdb4e230e17bf1020f86ebda32cea7",
+      "network": "sepolia"
     },
     "registerBatch_2": {
       "gasUsed": "155446",
-      "network": "localhost"
+      "effectiveGasPriceGwei": "5.551822822",
+      "costEth": "0.000863008650388612",
+      "txHash": "0xc69165cbfb1ef087e67f80f4c2b56be13c34c31197e72311a8b9d7f51e2c776f",
+      "network": "sepolia"
     },
     "rejectBatch": {
       "gasUsed": "103533",
-      "network": "localhost"
+      "effectiveGasPriceGwei": "5.328641886",
+      "costEth": "0.000551690280383238",
+      "txHash": "0xa86bf099f1624c622b8f3e6d72b6590718726868a2535de678694599fedc0a26",
+      "network": "sepolia"
     },
     "registerRevision": {
       "gasUsed": "181835",
-      "network": "localhost"
+      "effectiveGasPriceGwei": "5.312604037",
+      "costEth": "0.000966017355067895",
+      "txHash": "0xd19acfbd7723098bc5054c9d86d1e456aa3f9684bd9b05e1be8682b4a8085a48",
+      "network": "sepolia"
     }
   }
 }

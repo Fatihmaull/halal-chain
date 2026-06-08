@@ -42,7 +42,7 @@ Run \texttt{node} and \texttt{deploy:local} in separate terminals.
 Seven unit tests should pass.
 Default Hardhat account \#0 receives \texttt{DEFAULT\_ADMIN\_ROLE} on deploy; scripts grant producer and auditor roles to accounts \#1 and \#2 for local demos.
 
-\subsection{Base Sepolia Deployment}
+\subsection{Ethereum Sepolia Deployment}
 Configure \texttt{contracts/.env}:
 \begin{Code}
 DEPLOYER_PRIVATE_KEY=0x...
@@ -54,12 +54,15 @@ BASE_SEPOLIA_RPC_URL=
 Then run \texttt{npm run deploy:base-sepolia} and \texttt{npm run evaluate:gas}.
 Fund the deployer via a Base Sepolia faucet before broadcasting transactions.
 
-\subsection{Record Placeholders}
+\subsection{Deployment Records}
 \begin{itemize}
-  \item Git commit hash: update before submission
-  \item Contract address (Base Sepolia): TBD after deployment
-  \item Chain ID: 84532 (Base Sepolia)
-  \item Frontend demo URL: TBD after Vercel deploy
+  \item Git commit hash: \texttt{313f06c4ee329ac58a8c17eb3399802e077361be}
+  \item Contract address (Ethereum Sepolia): \texttt{0xDaCA688e86F438A7cD6B0C9B69606C67CE85Dc92}
+  \item Chain ID: 11155111 (Ethereum Sepolia)
+  \item Evaluation timestamp: 2026-06-08T12:37:38.107Z
+  \item Evidence bundle: \texttt{docs/evaluation/EVALUATION\_REPORT.json}
+  \item Frontend demo URL: http://localhost:3000
+  \item Setup tutorial: \texttt{docs/ETH\_SEPOLIA\_SETUP.md}
 \end{itemize}
 
 See \texttt{docs/BASELINE.md} for Hardhat default wallet addresses used in local development.

@@ -65,6 +65,7 @@ export function WalletBar({
           <button
             className="h-10 rounded-full bg-zinc-950 px-4 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50 dark:bg-white dark:text-black"
             disabled={isConnecting}
+            data-testid="wallet-connect"
             onClick={onConnect}
           >
             {t("connectWallet")}

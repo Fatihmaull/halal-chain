@@ -104,6 +104,7 @@ export default function AuditorPage() {
                   <button
                     key={String(id)}
                     type="button"
+                    data-testid={`auditor-pending-${id}`}
                     className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm ${
                       String(id) === String(selected?.id)
                         ? "border-zinc-950 bg-zinc-50 dark:border-white dark:bg-zinc-900"
@@ -156,6 +157,7 @@ export default function AuditorPage() {
                 <div className="grid gap-2 sm:grid-cols-3">
                   <button
                     className="h-11 rounded-full bg-emerald-600 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
+                    data-testid="auditor-verify"
                     disabled={!isConnected || isPending || isConfirming || hasAuditorRole === false}
                     onClick={() => setConfirmAction("verify")}
                   >
@@ -163,6 +165,7 @@ export default function AuditorPage() {
                   </button>
                   <button
                     className="h-11 rounded-full bg-red-600 text-sm font-medium text-white hover:bg-red-500 disabled:opacity-50"
+                    data-testid="auditor-reject"
                     disabled={!isConnected || isPending || isConfirming || hasAuditorRole === false}
                     onClick={() => setConfirmAction("reject")}
                   >

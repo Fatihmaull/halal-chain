@@ -28,7 +28,7 @@ This paper makes the following contributions:
   \item \textbf{HalalChain protocol design}---a three-role model (Producer, Auditor, Consumer) with OpenZeppelin RBAC~\cite{openzeppelin2024access}, explicit batch lifecycle states, and on-chain revision history linking resubmissions to rejected parent batches.
   \item \textbf{Architecture analysis}---a tradeoff study between on-chain anchors (CIDs, status, timestamps, auditor addresses) and off-chain documents on IPFS~\cite{benet2014ipfs,caro2018blockchain}, including consumer read paths that do not require wallets.
   \item \textbf{Ethical design mapping}---traceability from Maqasid-aligned requirements (Section~\ref{sec:prelim}) to smart contract enforcement, framed as engineering requirements rather than fatwa.
-  \item \textbf{Open implementation and evaluation framework}---reproducible codebase with seven unit tests, three functional scenarios, and qualitative security validation (Section~\ref{sec:eval-a}); empirical Base Sepolia benchmarks reserved (Section~\ref{sec:eval-b}).
+  \item \textbf{Open implementation and evaluation framework}---reproducible codebase with seven unit tests, three functional scenarios, and qualitative security validation (Section~\ref{sec:eval-a}); empirical Ethereum Sepolia testnet benchmarks (Section~\ref{sec:eval-b}) and functional scenario validation (Section~\ref{sec:eval-a}).
 \end{enumerate}
 
 \subsection{Paper Organization}

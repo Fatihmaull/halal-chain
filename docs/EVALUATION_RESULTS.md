@@ -7,7 +7,7 @@
 | Network | Status | Notes |
 |---------|--------|-------|
 | Hardhat localhost | Script ready | `npm run evaluate:gas` — dev validation only |
-| Base Sepolia | **Pending** | Requires `DEPLOYER_PRIVATE_KEY` + faucet ETH |
+| Base Sepolia | **Complete** | 2026-06-08 — see EVALUATION_RESULTS.json | Requires `DEPLOYER_PRIVATE_KEY` + faucet ETH |
 
 ## How to Run
 
@@ -45,8 +45,10 @@ _Results will appear in `EVALUATION_RESULTS.json` after running the evaluation s
 
 ## Blockers for Base Sepolia
 
-1. Set `DEPLOYER_PRIVATE_KEY` in `contracts/.env`
+Follow the full tutorial: [BASE_SEPOLIA_SETUP.md](./BASE_SEPOLIA_SETUP.md)
+
+1. Set `DEPLOYER_PRIVATE_KEY` in `contracts/.env` (or `npm run init:sepolia-env`)
 2. Fund wallet via [Alchemy Base Sepolia Faucet](https://www.alchemy.com/faucets/base-sepolia)
 3. Run `npm run deploy:base-sepolia`
 4. Run `npm run evaluate:gas:sepolia`
-5. Update `paper/sections/06_evaluation.tex` Table with verified values
+5. Run `cd paper && npm run sync:eval` to update LaTeX sections

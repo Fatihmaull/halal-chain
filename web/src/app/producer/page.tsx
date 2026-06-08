@@ -166,6 +166,7 @@ export default function ProducerPage() {
                   <Field label={t("submitRevision")}>
                     <select
                       className="input-field"
+                      data-testid="producer-revision-select"
                       value={parentBatchId}
                       onChange={(e) => setParentBatchId(e.target.value)}
                     >
@@ -182,7 +183,12 @@ export default function ProducerPage() {
                   <button className="btn-secondary" onClick={() => setStep(1)}>
                     Back
                   </button>
-                  <button className="btn-primary flex-1" disabled={!isConnected || isPending || isConfirming} onClick={onRegister}>
+                  <button
+                    className="btn-primary flex-1"
+                    data-testid="producer-register"
+                    disabled={!isConnected || isPending || isConfirming}
+                    onClick={onRegister}
+                  >
                     {isPending || isConfirming ? "Submitting…" : parentBatchId ? t("submitRevision") : t("registerBatch")}
                   </button>
                 </div>

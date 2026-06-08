@@ -87,16 +87,22 @@ Lihat [`docs/BASELINE.md`](docs/BASELINE.md) untuk alamat wallet Hardhat default
 
 ---
 
-## Deploy Base Sepolia
+## Deploy Testnet
+
+**Ethereum Sepolia** (if you already have Sepolia ETH): [docs/ETH_SEPOLIA_SETUP.md](docs/ETH_SEPOLIA_SETUP.md)
 
 ```bash
 cd contracts
-# Set DEPLOYER_PRIVATE_KEY, PRODUCER_ADDRESS, AUDITOR_ADDRESS in .env
-npm run deploy:base-sepolia
-npm run export-abi
+copy .env.example .env
+npm run preflight:eth-sepolia
+npm run deploy:eth-sepolia
+npm run evaluate:gas:eth-sepolia
+cd ../paper && npm run sync:eval
 ```
 
-Faucet: [Alchemy Base Sepolia](https://www.alchemy.com/faucets/base-sepolia)
+One-command pipeline: `powershell -File scripts/run-eth-sepolia-pipeline.ps1`
+
+**Base Sepolia** (L2 paper target): [docs/BASE_SEPOLIA_SETUP.md](docs/BASE_SEPOLIA_SETUP.md) — `npm run deploy:base-sepolia`
 
 ---
 

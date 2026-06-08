@@ -1,0 +1,92 @@
+{
+  "timestamp": "2026-06-08T12:37:38.107Z",
+  "network": "sepolia",
+  "chainId": 11155111,
+  "contractAddress": "0xDaCA688e86F438A7cD6B0C9B69606C67CE85Dc92",
+  "scenarios": {
+    "A": {
+      "batchIds": [
+        1
+      ],
+      "txHashes": [
+        "0x6bc9182f6fc75404e9a33b780da43cd49ff90937d88009caf59be3a0c1025621",
+        "0x94813d6de6ae634a6acc9e126598028fa8d83d02be84d29c8c2d8d8fa98e8feb"
+      ],
+      "verifyUrl": "http://localhost:3000/verify/1",
+      "screenshot": "screenshots/scenario-a-verified.png",
+      "pass": true
+    },
+    "B": {
+      "batchIds": [
+        2,
+        3
+      ],
+      "txHashes": [
+        "0x42504b799ea8521d3569d6a23d7096bf6eec05fa1000d6afb35b78c79e5543a5",
+        "0x204050f29fdd79f0573deec3ffb5d0bd4e54daad67818b18880e0987d2bd9301",
+        "0xbdf91188674ed855bd174e25a299d198d4c98b87e954e170870cde59999e8a7a",
+        "0xabcba7d0e96b38ce69f7fc6908b3d6773f9b3ba85b92349f6fa7d07fd3d909ce"
+      ],
+      "verifyUrls": {
+        "rejected": "http://localhost:3000/verify/2",
+        "verified": "http://localhost:3000/verify/3"
+      },
+      "parentLinkVerified": true,
+      "screenshotRejected": "screenshots/scenario-b-rejected.png",
+      "screenshotVerified": "screenshots/scenario-b-revision-verified.png",
+      "pass": true
+    },
+    "C": {
+      "rejectedBatchId": 2,
+      "revertError": "execution reverted",
+      "error": "InvalidStatus",
+      "getBatchStillRejected": true,
+      "verifyUrl": "http://localhost:3000/verify/2",
+      "screenshot": "screenshots/scenario-b-rejected.png",
+      "pass": true
+    }
+  },
+  "metrics": {
+    "blockConfirmationSeconds": 12,
+    "verifyPageTTFBms": null,
+    "ipfsUploadMs": null
+  },
+  "unitTests": {
+    "passed": null,
+    "total": 7,
+    "logFile": "logs/npm-test.log"
+  },
+  "gasEval": "docs/EVALUATION_RESULTS.json",
+  "transactions": [
+    {
+      "label": "A_registerBatch",
+      "txHash": "0x6bc9182f6fc75404e9a33b780da43cd49ff90937d88009caf59be3a0c1025621",
+      "blockNumber": 11015391
+    },
+    {
+      "label": "A_verifyBatch",
+      "txHash": "0x94813d6de6ae634a6acc9e126598028fa8d83d02be84d29c8c2d8d8fa98e8feb",
+      "blockNumber": 11015392
+    },
+    {
+      "label": "B_registerBatch",
+      "txHash": "0x42504b799ea8521d3569d6a23d7096bf6eec05fa1000d6afb35b78c79e5543a5",
+      "blockNumber": 11015393
+    },
+    {
+      "label": "B_rejectBatch",
+      "txHash": "0x204050f29fdd79f0573deec3ffb5d0bd4e54daad67818b18880e0987d2bd9301",
+      "blockNumber": 11015395
+    },
+    {
+      "label": "B_registerRevision",
+      "txHash": "0xbdf91188674ed855bd174e25a299d198d4c98b87e954e170870cde59999e8a7a",
+      "blockNumber": 11015396
+    },
+    {
+      "label": "B_verifyBatch",
+      "txHash": "0xabcba7d0e96b38ce69f7fc6908b3d6773f9b3ba85b92349f6fa7d07fd3d909ce",
+      "blockNumber": 11015397
+    }
+  ]
+}

@@ -100,4 +100,17 @@ describe("HalalChain", function () {
     await expect(halalChain.getBatch(99n)).to.revert(ethers);
     await expect(halalChain.connect(producer).registerRevision(99n, "cid")).to.revert(ethers);
   });
+
+  it("rejects verify on rejected batch (Scenario C)", async function () {
+    const { halalChain, producer, auditor, ethers } = await deployFixture();
+
+    await (await halalChain.connect(producer).registerBatch("Keripik", "bafy-v1")).wait();
+    await (await halalChain.connect(auditor).rejectBatch(1n, "Dokumen kurang", "bafy-audit")).wait();
+
+    await expect(halalChain.connect(auditor).verifyBatch(1n, "bafy-tamper")).to.revert(ethers);
+
+    const batch = await halalChain.getBatch(1n);
+    expect(batch.status).to.equal(3n);
+    expect(batch.rejectReason).to.equal("Dokumen kurang");
+  });
 });

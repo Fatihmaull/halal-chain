@@ -4,6 +4,11 @@ async function main() {
   const { ethers } = await network.connect();
   const signers = await ethers.getSigners();
   const deployer = signers[0];
+  if (!deployer) {
+    throw new Error(
+      "No deployer account. Copy contracts/.env.example to contracts/.env and set DEPLOYER_PRIVATE_KEY."
+    );
+  }
   console.log("Deploying with:", deployer.address);
 
   const HalalChain = await ethers.getContractFactory("HalalChain");

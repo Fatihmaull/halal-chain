@@ -97,7 +97,13 @@ export function getDemoUrl() {
   return process.env.NEXT_PUBLIC_DEMO_URL || "http://localhost:3000";
 }
 
-export function basescanUrl(address: string, chainId?: number) {
+export function blockExplorerAddressUrl(address: string, chainId?: number) {
+  if (chainId === 11155111) return `https://sepolia.etherscan.io/address/${address}`;
   if (chainId === 84532) return `https://sepolia.basescan.org/address/${address}`;
   return null;
+}
+
+/** @deprecated use blockExplorerAddressUrl */
+export function basescanUrl(address: string, chainId?: number) {
+  return blockExplorerAddressUrl(address, chainId);
 }

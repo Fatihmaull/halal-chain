@@ -65,7 +65,11 @@ paper/
 
 ### Phase 4 — Evaluation
 - **VI-A (now):** Scenarios A/B/C on Hardhat — qualitative only
-- **VI-B (blocked):** Run `npm run evaluate:gas` on Base Sepolia
+- **VI-B:** Follow [docs/BASE_SEPOLIA_SETUP.md](../docs/BASE_SEPOLIA_SETUP.md), then:
+  ```bash
+  cd contracts && npm run evaluate:gas:sepolia
+  cd ../paper && npm run sync:eval
+  ```
 - **Never fabricate** HalalChain gas numbers
 - L2 costs from **other papers** only in Related Work
 
@@ -93,9 +97,18 @@ paper/
 - [ ] APC budget confirmed (IEEE Access is open access)
 - [ ] Ethics statement (only if human subjects / KKN interviews)
 
+## Paper automation scripts
+
+```bash
+npm run sync:eval          # EVALUATION_RESULTS.json (baseSepolia) → sections VI-B + abstract + appendix
+npm run prepare:submission # Git commit hash + appendix metadata (no Sepolia required)
+```
+
+Full pipeline (from repo root): `powershell -File scripts/run-sepolia-pipeline.ps1`
+
 ## Reproducibility
 
-After Base Sepolia deploy, update Appendix:
-- Contract address
-- Git commit hash
-- Evaluation results in `docs/EVALUATION_RESULTS.md`
+After Base Sepolia deploy:
+- `npm run sync:eval` updates Section VI-B and appendix
+- Or `npm run prepare:submission` for commit hash only
+- See [SUBMISSION_CHECKLIST.md](./SUBMISSION_CHECKLIST.md) and [COVER_LETTER.md](./COVER_LETTER.md)

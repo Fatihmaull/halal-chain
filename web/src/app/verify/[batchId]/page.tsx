@@ -59,7 +59,10 @@ export default function VerifyBatchPage({ params }: { params: { batchId: string 
 
           {batch && (
             <>
-              <div className={`mt-6 rounded-2xl border p-6 text-center ${statusColors(status)}`}>
+              <div
+                className={`mt-6 rounded-2xl border p-6 text-center ${statusColors(status)}`}
+                data-testid="verify-status"
+              >
                 <div className="text-2xl font-bold">{statusLabel}</div>
                 <p className="mt-2 text-sm opacity-80">{statusDesc}</p>
               </div>
@@ -70,7 +73,11 @@ export default function VerifyBatchPage({ params }: { params: { batchId: string 
                   <div>
                     <dt className="text-xs uppercase text-zinc-500">{t("parentBatch")}</dt>
                     <dd className="mt-1">
-                      <Link className="text-emerald-600 underline" href={`/verify/${batch.parentBatchId}`}>
+                      <Link
+                        className="text-emerald-600 underline"
+                        href={`/verify/${batch.parentBatchId}`}
+                        data-testid="verify-parent-link"
+                      >
                         #{String(batch.parentBatchId)}
                       </Link>
                     </dd>
@@ -100,7 +107,11 @@ export default function VerifyBatchPage({ params }: { params: { batchId: string 
                     </a>
                   </div>
                 )}
-                {batch.rejectReason && <InfoRow label={t("rejectReason")} value={batch.rejectReason} />}
+                {batch.rejectReason && (
+                  <div data-testid="verify-reject-reason">
+                    <InfoRow label={t("rejectReason")} value={batch.rejectReason} />
+                  </div>
+                )}
                 {contractAddress && basescanUrl(contractAddress, chainId) && (
                   <div>
                     <a

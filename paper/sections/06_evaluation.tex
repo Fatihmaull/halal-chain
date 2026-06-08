@@ -42,22 +42,19 @@ OpenZeppelin \texttt{onlyRole} modifiers gate mutating functions.
 Tests assert that unauthorized addresses cannot register, verify, reject, or revoke, addressing basic privilege escalation concerns in the v1 prototype.
 
 \subsubsection{Functional Scenarios}
-Three end-to-end scenarios from \texttt{docs/EVALUATION.md} were executed on a local Hardhat network with deployed contracts and the Next.js frontend:
+Three end-to-end scenarios from \texttt{docs/EVALUATION.md} were executed on Ethereum Sepolia testnet (contract \texttt{0xDaCA688e86F438A7cD6B0C9B69606C67CE85Dc92}) on 2026-06-08, with evidence archived in \texttt{docs/evaluation/}.
 
 \paragraph{Scenario A (happy path).}
-Producer registers batch with IPFS documents $\rightarrow$ auditor verifies $\rightarrow$ consumer page displays Verified status and document links.
-Validates the primary UMKM-to-consumer trust path.
+Scenario~A (batch \#1): producer registration and auditor verification on Ethereum Sepolia testnet; consumer page at \texttt{/verify/1} displays verified status.
 
 \paragraph{Scenario B (rejection and revision).}
-Producer registers batch~1 $\rightarrow$ auditor rejects with reason $\rightarrow$ consumer page shows Rejected $\rightarrow$ producer submits \texttt{registerRevision} creating batch~2 $\rightarrow$ auditor verifies batch~2 $\rightarrow$ consumer sees Verified with parent link to batch~1.
-Validates revision FSM and UI linkage.
+Scenario~B: batch \#2 rejected, revision batch \#3 verified with parent link preserved.
 
 \paragraph{Scenario C (tamper resistance).}
-After rejection of batch~1, a direct \texttt{verifyBatch(1)} call reverts.
-Subsequent \texttt{getBatch(1)} still returns \texttt{Rejected} with the original reason.
-Demonstrates that audit outcomes cannot be silently upgraded without a new batch identifier.
+Scenario~C: \texttt{verifyBatch} on rejected batch \#2 reverts (\texttt{InvalidStatus}); on-chain state unchanged.
 
-Local validation confirms protocol correctness and UI integration; it does not substitute for public testnet latency, fee volatility, or Pinata production SLAs.
+Functional validation on Ethereum Sepolia confirms protocol correctness and wallet-free consumer reads via the Next.js frontend; gas costs on L1 testnet upper-bound L2 deployment feasibility~\cite{optimism2024spec}.
+
 
 \subsubsection{Development-Network Gas Observations}
 Hardhat localhost receipts provide \emph{preliminary} gas usage for contract sizing (Table~\ref{tab:gas-local}).
@@ -84,11 +81,12 @@ These figures are \textbf{not} reported as Base Sepolia costs---opcode pricing a
 \subsection{Quantitative Testnet Benchmarks}
 \label{sec:eval-b}
 
-Table~\ref{tab:gas} will report gas usage, effective L2 fees, and end-to-end latency measured on Base Sepolia (chain ID 84532) after deployment with faucet-funded accounts.
-\textbf{No fabricated testnet values are reported;} cells marked ``TBD'' await on-chain transaction receipts from \texttt{npm run evaluate:gas}.
+Table~\ref{tab:gas} reports gas usage and transaction costs measured on Ethereum Sepolia (chain ID 11155111) on 2026-06-08.
+Contract address: \texttt{0x0Ccf5d905787E5E7EA698469fAe38a1517Ff8c29}.
+All values were captured from on-chain receipts via \texttt{npm run evaluate:gas:eth-sepolia} and cross-checked on Etherscan.
 
 \begin{table}[t]
-  \caption{Gas and cost metrics on Base Sepolia (to be completed after deployment).}
+  \caption{Gas and cost metrics on Ethereum Sepolia (2026-06-08).}
   \label{tab:gas}
   \centering
   \footnotesize
@@ -96,10 +94,10 @@ Table~\ref{tab:gas} will report gas usage, effective L2 fees, and end-to-end lat
     \toprule
     \textbf{Operation} & \textbf{Gas Used} & \textbf{Cost (ETH)} \\
     \midrule
-    \texttt{registerBatch} & TBD & TBD \\
-    \texttt{verifyBatch} & TBD & TBD \\
-    \texttt{rejectBatch} & TBD & TBD \\
-    \texttt{registerRevision} & TBD & TBD \\
+    \texttt{registerBatch} & 155,506 & 0.00078367 \\
+    \texttt{verifyBatch} & 79,214 & 0.00034832 \\
+    \texttt{rejectBatch} & 103,533 & 0.00055169 \\
+    \texttt{registerRevision} & 181,835 & 0.00096602 \\
     \texttt{getBatch} (RPC read) & 0 & 0 \\
     \bottomrule
   \end{tabularx}
