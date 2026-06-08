@@ -51,4 +51,3 @@ Follow the full tutorial: [BASE_SEPOLIA_SETUP.md](./BASE_SEPOLIA_SETUP.md)
 2. Fund wallet via [Alchemy Base Sepolia Faucet](https://www.alchemy.com/faucets/base-sepolia)
 3. Run `npm run deploy:base-sepolia`
 4. Run `npm run evaluate:gas:sepolia`
-5. Run `cd paper && npm run sync:eval` to update LaTeX sections

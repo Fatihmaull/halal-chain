@@ -14,8 +14,6 @@
     "evaluate:gas": "hardhat run scripts/evaluate-gas.ts --network localhost",
     "evaluate:gas:eth-sepolia": "hardhat run scripts/evaluate-gas.ts --network sepolia",
     "evaluate:gas:sepolia": "hardhat run scripts/evaluate-gas.ts --network baseSepolia",
-    "eval:eth-sepolia-and-sync": "npm run evaluate:gas:eth-sepolia && cd ../paper && npm run sync:eval",
-    "eval:sepolia-and-sync": "npm run evaluate:gas:sepolia && cd ../paper && npm run sync:eval",
     "preflight:eth-sepolia": "hardhat run scripts/preflight-sepolia.ts --network sepolia",
     "scenarios:eth-sepolia": "hardhat run scripts/run-scenarios-eth-sepolia.ts --network sepolia",
     "preflight:sepolia": "hardhat run scripts/preflight-sepolia.ts --network baseSepolia",

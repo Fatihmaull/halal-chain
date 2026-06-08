@@ -1,4 +1,4 @@
-# HalalChain Base Sepolia evaluation + paper sync pipeline
+# HalalChain Base Sepolia deploy and evaluation pipeline
 # Prerequisites: contracts/.env with DEPLOYER_PRIVATE_KEY (see docs/BASE_SEPOLIA_SETUP.md)
 
 $ErrorActionPreference = "Stop"
@@ -24,16 +24,5 @@ Write-Host "=== Gas evaluation ===" -ForegroundColor Cyan
 npm run evaluate:gas:sepolia
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Set-Location "$root\paper"
-Write-Host "=== Sync paper ===" -ForegroundColor Cyan
-npm run sync:eval
-npm run prepare:submission
-
-Write-Host "=== Build PDF ===" -ForegroundColor Cyan
-if (Get-Command latexmk -ErrorAction SilentlyContinue) {
-    make pdf
-} else {
-    Write-Host "latexmk not found. Install MiKTeX or TeX Live, then run: cd paper; make pdf"
-}
-
-Write-Host "Done. Verify txs on https://sepolia.basescan.org/" -ForegroundColor Green
+Write-Host "Done. Results in docs/EVALUATION_RESULTS.json" -ForegroundColor Green
+Write-Host "Verify txs on https://sepolia.basescan.org/" -ForegroundColor Green

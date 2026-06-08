@@ -53,7 +53,7 @@ Produsen UMKM     →  Dashboard  →  registerBatch() + upload IPFS + QR
 ```
 contracts/          Hardhat 3 + HalalChain.sol + tests
 web/                Next.js app (producer, auditor, verify)
-docs/               BASELINE.md, EVALUATION.md, Article draft
+docs/               BASELINE.md, EVALUATION.md
 HalalChain_PRD_v1.0.md
 ```
 
@@ -97,7 +97,6 @@ copy .env.example .env
 npm run preflight:eth-sepolia
 npm run deploy:eth-sepolia
 npm run evaluate:gas:eth-sepolia
-cd ../paper && npm run sync:eval
 ```
 
 One-command pipeline: `powershell -File scripts/run-eth-sepolia-pipeline.ps1`
@@ -113,8 +112,7 @@ One-command pipeline: `powershell -File scripts/run-eth-sepolia-pipeline.ps1`
 | [`docs/BASELINE.md`](docs/BASELINE.md) | Setup lokal + wallet addresses |
 | [`docs/EVALUATION.md`](docs/EVALUATION.md) | Skenario evaluasi + metrik untuk paper |
 | [`docs/EVALUATION_RESULTS.md`](docs/EVALUATION_RESULTS.md) | Hasil evaluasi gas (localhost dev; Sepolia pending) |
-| [`docs/HalalChain_Article_Draft.md`](docs/HalalChain_Article_Draft.md) | Draft artikel (Markdown) |
-| [`paper/`](paper/) | **IEEEtran LaTeX paper** — build with `make pdf` |
+| [`paper/`](paper/) | IEEEtran LaTeX paper — build with `make pdf` |
 
 ---
 

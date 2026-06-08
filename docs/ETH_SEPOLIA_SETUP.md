@@ -34,7 +34,7 @@ npm install
 npm run preflight:eth-sepolia
 ```
 
-## Step 4 — Deploy + evaluate + sync paper
+## Step 4 — Deploy and evaluate
 
 From repo root:
 
@@ -48,8 +48,6 @@ Or manually:
 cd contracts
 npm run deploy:eth-sepolia
 npm run evaluate:gas:eth-sepolia
-cd ../paper
-npm run sync:eval
 ```
 
 Verify on [sepolia.etherscan.io](https://sepolia.etherscan.io/).

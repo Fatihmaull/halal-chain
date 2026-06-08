@@ -85,13 +85,6 @@ npm run evaluate:gas:sepolia
 
 Results are written to `docs/EVALUATION_RESULTS.json`. Cross-check each `txHash` on Basescan.
 
-Sync results into the paper:
-
-```powershell
-cd ..\paper
-npm run sync:eval
-```
-
 ## Step 7 — Configure web frontend for testnet scenarios
 
 ```powershell
@@ -136,12 +129,7 @@ Run scenarios A/B/C from [EVALUATION.md](./EVALUATION.md) on `/producer`, `/audi
 From repo root:
 
 ```powershell
-cd contracts
-npm run deploy:base-sepolia
-npm run evaluate:gas:sepolia
-cd ..\paper
-npm run sync:eval
-make pdf
+powershell -File scripts/run-sepolia-pipeline.ps1
 ```
 
 ## Troubleshooting

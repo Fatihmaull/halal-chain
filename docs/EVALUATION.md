@@ -1,4 +1,4 @@
-# HalalChain Evaluation Plan (Phase 4)
+# HalalChain Evaluation Plan
 
 Evaluation scenarios and metrics for the academic paper and demo validation.
 

@@ -1,4 +1,4 @@
-# HalalChain Ethereum Sepolia evaluation + paper sync pipeline
+# HalalChain Ethereum Sepolia deploy and evaluation pipeline
 # Prerequisites: contracts/.env with DEPLOYER_PRIVATE_KEY (see docs/ETH_SEPOLIA_SETUP.md)
 
 $ErrorActionPreference = "Stop"
@@ -23,16 +23,5 @@ Write-Host "=== Gas evaluation ===" -ForegroundColor Cyan
 npm run evaluate:gas:eth-sepolia
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Set-Location "$root\paper"
-Write-Host "=== Sync paper ===" -ForegroundColor Cyan
-npm run sync:eval
-npm run prepare:submission
-
-Write-Host "=== Build PDF ===" -ForegroundColor Cyan
-if (Get-Command latexmk -ErrorAction SilentlyContinue) {
-    make pdf
-} else {
-    Write-Host "latexmk not found. Use Overleaf or: cd paper; make pdf"
-}
-
-Write-Host "Done. Verify txs on https://sepolia.etherscan.io/" -ForegroundColor Green
+Write-Host "Done. Results in docs/EVALUATION_RESULTS.json" -ForegroundColor Green
+Write-Host "Verify txs on https://sepolia.etherscan.io/" -ForegroundColor Green

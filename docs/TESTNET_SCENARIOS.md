@@ -41,10 +41,9 @@ Record: registration → verification block time: _____ s
 | 2 | `verifyBatch(1)` reverts (InvalidStatus) | [ ] |
 | 3 | `getBatch(1)` still Rejected with same reason | [ ] |
 
-## Exit criteria (paper demo)
+## Exit criteria
 
 - [ ] All three scenarios pass on testnet
 - [x] Gas eval in `docs/EVALUATION_RESULTS.json`
-- [x] Paper synced (`cd paper && npm run sync:eval`)
-- [ ] Optional: Vercel demo URL for appendix
-- [ ] Optional: 5-minute screen recording
+- [x] Evidence in `docs/evaluation/EVALUATION_REPORT.json`
+- [x] Live demo at https://web-six-ivory-36.vercel.app/
