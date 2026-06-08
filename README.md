@@ -112,6 +112,7 @@ One-command pipeline: `powershell -File scripts/run-eth-sepolia-pipeline.ps1`
 | [`docs/BASELINE.md`](docs/BASELINE.md) | Setup lokal + wallet addresses |
 | [`docs/EVALUATION.md`](docs/EVALUATION.md) | Skenario evaluasi + metrik untuk paper |
 | [`docs/EVALUATION_RESULTS.md`](docs/EVALUATION_RESULTS.md) | Hasil evaluasi gas (localhost dev; Sepolia pending) |
+| [`docs/HalalChain_Overview.pdf`](docs/HalalChain_Overview.pdf) | Plain-language guide for reviewers and non-technical readers |
 | [`paper/`](paper/) | IEEEtran LaTeX paper — build with `make pdf` |
 
 ---
