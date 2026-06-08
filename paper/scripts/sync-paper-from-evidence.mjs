@@ -178,17 +178,35 @@ appendix = appendix.replace(
   `\\subsection{${networkLabel} Deployment}`
 );
 
+const repoUrl = "https://github.com/Fatihmaull/halal-chain";
+const demoUrl = process.env.NEXT_PUBLIC_DEMO_URL || "https://web-six-ivory-36.vercel.app/";
+const demoBase = demoUrl.replace(/\/$/, "");
+const explorerBase =
+  report.network === "sepolia"
+    ? "https://sepolia.etherscan.io/address"
+    : "https://sepolia.basescan.org/address";
+const verifyLines = [1, 2, 3]
+  .map(
+    (id) =>
+      `  \\item Verify batch \\#${id}:\\\\\n  \\url{${demoBase}/verify/${id}}`
+  )
+  .join("\n");
+
 appendix = appendix.replace(
   /\\subsection\{Deployment Records\}[\s\S]*?See \\texttt\{docs\/BASELINE\.md\}/,
   `\\subsection{Deployment Records}
 \\begin{itemize}
-  \\item Git commit hash: \\texttt{${commitHash}}
-  \\item Contract address (${networkLabel}): \\texttt{${report.contractAddress}}
+  \\item Git commit:\\\\
+  \\url{${repoUrl}/commit/${commitHash}}
+  \\item Contract (${networkLabel}):\\\\
+  \\url{${explorerBase}/${report.contractAddress}}
   \\item Chain ID: ${chainId} (${networkLabel})
   \\item Evaluation timestamp: ${report.timestamp}
-  \\item Evidence bundle: \\texttt{docs/evaluation/EVALUATION\\_REPORT.json}
-  \\item Frontend demo URL: ${process.env.NEXT_PUBLIC_DEMO_URL || "http://localhost:3000"}
-  \\item Setup tutorial: \\texttt{docs/ETH\\_SEPOLIA\\_SETUP.md}
+  \\item Evidence bundle: \\path{docs/evaluation/EVALUATION_REPORT.json}
+  \\item Frontend demo:\\\\
+  \\url{${demoBase}/}
+${verifyLines}
+  \\item Setup tutorial: \\path{docs/ETH_SEPOLIA_SETUP.md}
 \\end{itemize}
 
 See \\texttt{docs/BASELINE.md}`

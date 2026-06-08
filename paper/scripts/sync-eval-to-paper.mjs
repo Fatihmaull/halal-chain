@@ -21,6 +21,7 @@ const NETWORK_META = {
     label: "Ethereum Sepolia",
     chainId: 11155111,
     explorer: "Etherscan",
+    explorerBase: "https://sepolia.etherscan.io/address",
     evalCmd: "evaluate:gas:eth-sepolia",
     l2Note:
       "Although HalalChain targets Base L2 for production, Ethereum Sepolia provides a publicly accessible EVM testnet for verifiable gas measurement.",
@@ -29,6 +30,7 @@ const NETWORK_META = {
     label: "Base Sepolia",
     chainId: 84532,
     explorer: "Basescan",
+    explorerBase: "https://sepolia.basescan.org/address",
     evalCmd: "evaluate:gas:sepolia",
     l2Note: "These costs are suitable for UMKM-scale batch certification on an L2 rollup.",
   },
@@ -133,12 +135,15 @@ appendix = appendix.replace(
   /\\subsection\{Record Placeholders\}[\s\S]*?See \\texttt\{docs\/BASELINE\.md\}/,
   `\\subsection{Deployment Records}
 \\begin{itemize}
-  \\item Git commit hash: \\texttt{${commitHash}}
-  \\item Contract address (${meta.label}): \\texttt{${data.contractAddress}}
+  \\item Git commit:\\\\
+  \\url{https://github.com/Fatihmaull/halal-chain/commit/${commitHash}}
+  \\item Contract (${meta.label}):\\\\
+  \\url{${meta.explorerBase}/${data.contractAddress}}
   \\item Chain ID: ${meta.chainId} (${meta.label})
   \\item Evaluation timestamp: ${data.timestamp}
-  \\item Frontend demo URL: ${demoUrl.startsWith("http") ? `\\url{${demoUrl}}` : demoUrl}
-  \\item Raw metrics: \\texttt{docs/EVALUATION\\_RESULTS.json}
+  \\item Frontend demo:\\\\
+  ${demoUrl.startsWith("http") ? `\\url{${demoUrl.replace(/\\/$/, "")}/}` : demoUrl}
+  \\item Raw metrics: \\path{docs/EVALUATION_RESULTS.json}
 \\end{itemize}
 
 See \\texttt{docs/BASELINE.md}`

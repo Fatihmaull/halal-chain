@@ -45,15 +45,30 @@ if (existsSync(evalPath)) {
 const appendixPath = join(paperDir, "sections", "appendix_reproducibility.tex");
 let appendix = readFileSync(appendixPath, "utf8");
 
+const repoUrl = "https://github.com/Fatihmaull/halal-chain";
+const demoBase = demoUrl.startsWith("http") ? demoUrl.replace(/\/$/, "") : "";
+const explorerBase =
+  chainId === 11155111
+    ? "https://sepolia.etherscan.io/address"
+    : "https://sepolia.basescan.org/address";
+const contractLine =
+  contractAddress && !contractAddress.startsWith("TBD")
+    ? `  \\item Contract (${networkLabel}):\\\\\n  \\url{${explorerBase}/${contractAddress}}`
+    : `  \\item Contract (${networkLabel}): pending deployment`;
+const demoLine = demoBase
+  ? `  \\item Frontend demo:\\\\\n  \\url{${demoBase}/}`
+  : `  \\item Frontend demo URL: TBD after Vercel deploy`;
+
 const recordsBlock = `\\subsection{Deployment Records}
 \\begin{itemize}
-  \\item Git commit hash: \\texttt{${commitHash}}
-  \\item Contract address (${networkLabel}): \\texttt{${contractAddress}}
+  \\item Git commit:\\\\
+  \\url{${repoUrl}/commit/${commitHash}}
+${contractLine}
   \\item Chain ID: ${chainId} (${networkLabel})
   \\item Evaluation timestamp: ${evalTimestamp || "pending — run evaluate:gas:eth-sepolia"}
-  \\item Frontend demo URL: ${demoUrl.startsWith("http") ? `\\url{${demoUrl}}` : demoUrl}
-  \\item Setup tutorial: \\texttt{${setupDoc}}
-  \\item Raw metrics: \\texttt{docs/EVALUATION\\_RESULTS.json}
+${demoLine}
+  \\item Setup tutorial: \\path{${setupDoc.replace(/\\_/g, "_")}}
+  \\item Raw metrics: \\path{docs/EVALUATION_RESULTS.json}
 \\end{itemize}
 
 See \\texttt{docs/BASELINE.md}`;

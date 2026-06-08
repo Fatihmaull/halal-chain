@@ -5,11 +5,12 @@ import { type Address, isAddress } from "viem";
 import { usePublicClient } from "wagmi";
 import { halalChainAbi } from "@/lib/halalChainAbi";
 import { getHalalChainAddress } from "@/lib/contract";
+import { targetChainId } from "@/lib/wagmi";
 import type { BatchRecord } from "@/lib/batchUtils";
 
 export function useNextBatchId() {
   const address = getHalalChainAddress();
-  const client = usePublicClient();
+  const client = usePublicClient({ chainId: targetChainId });
   const [nextId, setNextId] = useState<bigint | null>(null);
 
   const refetch = useCallback(async () => {
@@ -31,7 +32,7 @@ export function useNextBatchId() {
 
 export function useBatch(batchId: bigint | undefined) {
   const address = getHalalChainAddress();
-  const client = usePublicClient();
+  const client = usePublicClient({ chainId: targetChainId });
   const [batch, setBatch] = useState<BatchRecord | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,7 +67,7 @@ export function useBatch(batchId: bigint | undefined) {
 export function useAllBatches() {
   const { nextId, refetch: refetchNextId } = useNextBatchId();
   const address = getHalalChainAddress();
-  const client = usePublicClient();
+  const client = usePublicClient({ chainId: targetChainId });
   const [batches, setBatches] = useState<{ id: bigint; batch: BatchRecord }[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -118,7 +119,7 @@ export function useAllBatches() {
 
 export function useHasAuditorRole(walletAddress?: Address) {
   const address = getHalalChainAddress();
-  const client = usePublicClient();
+  const client = usePublicClient({ chainId: targetChainId });
   const [hasRole, setHasRole] = useState<boolean | null>(null);
 
   useEffect(() => {

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useMemo } from "react";
-import { useChainId } from "wagmi";
+import { targetChainId } from "@/lib/wagmi";
 import { useI18n } from "@/lib/I18nProvider";
 import {
   ipfsGatewayUrl,
@@ -15,18 +16,20 @@ import { useBatch } from "@/lib/useBatches";
 import { getHalalChainAddress } from "@/lib/contract";
 import { AppHeader } from "@/components/ui";
 
-export default function VerifyBatchPage({ params }: { params: { batchId: string } }) {
+export default function VerifyBatchPage() {
+  const params = useParams<{ batchId: string }>();
+  const batchIdParam = params.batchId;
   const { t } = useI18n();
-  const chainId = useChainId();
+  const chainId = targetChainId;
   const contractAddress = getHalalChainAddress();
 
   const batchId = useMemo(() => {
     try {
-      return BigInt(params.batchId);
+      return BigInt(batchIdParam);
     } catch {
       return undefined;
     }
-  }, [params.batchId]);
+  }, [batchIdParam]);
 
   const { batch, loading, error } = useBatch(batchId);
 
@@ -41,7 +44,7 @@ export default function VerifyBatchPage({ params }: { params: { batchId: string 
       <main className="mx-auto w-full max-w-lg px-6 py-10">
         <div className="rounded-2xl border border-black/10 bg-white p-8 dark:border-white/10 dark:bg-zinc-950">
           <div className="text-sm text-zinc-600 dark:text-zinc-400">{t("batchId")}</div>
-          <div className="mt-1 text-3xl font-bold tracking-tight">#{params.batchId}</div>
+          <div className="mt-1 text-3xl font-bold tracking-tight">#{batchIdParam}</div>
 
           {!contractAddress && (
             <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">

@@ -33,5 +33,5 @@ Use before submitting. Pick **one** venue — see [VENUE_CHECKLIST.md](./VENUE_C
 
 ## After acceptance
 
-- [ ] Update appendix with final Vercel demo URL
+- [x] Update appendix with final Vercel demo URL (`https://web-six-ivory-36.vercel.app/`)
 - [ ] Tag GitHub release matching submission commit hash

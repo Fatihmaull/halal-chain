@@ -60,5 +60,5 @@ Environment variable \texttt{PINATA\_JWT} is required for production pins; when 
 Benchmarks intended for publication (Section~\ref{sec:eval-b}) will use real Pinata pins only.
 
 \subsection{Configuration and Deployment}
-Frontend environment variables include \texttt{NEXT\_PUBLIC\_HALALCHAIN\_ADDRESS}, \texttt{NEXT\_PUBLIC\_BASE\_SEPOLIA\_RPC\_URL}, and optional \texttt{NEXT\_PUBLIC\_DEMO\_URL} for QR base URLs.
-Contract deployment on Base Sepolia requires \texttt{DEPLOYER\_PRIVATE\_KEY} and faucet-funded ETH; reproducibility steps appear in Appendix~\ref{app:repro}.
+Frontend environment variables include \texttt{NEXT\_PUBLIC\_HALALCHAIN\_ADDRESS}, \texttt{NEXT\_PUBLIC\_CHAIN\_ID}, \texttt{NEXT\_PUBLIC\_SEPOLIA\_RPC\_URL}, and \texttt{NEXT\_PUBLIC\_DEMO\_URL} for QR base URLs.
+The consumer dashboard is deployed on Vercel (\url{https://web-six-ivory-36.vercel.app/}); contract deployment on Ethereum Sepolia or Base Sepolia requires \texttt{DEPLOYER\_PRIVATE\_KEY} and faucet-funded ETH (Appendix~\ref{app:repro}).

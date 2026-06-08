@@ -42,13 +42,13 @@ OpenZeppelin \texttt{onlyRole} modifiers gate mutating functions.
 Tests assert that unauthorized addresses cannot register, verify, reject, or revoke, addressing basic privilege escalation concerns in the v1 prototype.
 
 \subsubsection{Functional Scenarios}
-Three end-to-end scenarios from \texttt{docs/EVALUATION.md} were executed on Ethereum Sepolia testnet (contract \texttt{0xDaCA688e86F438A7cD6B0C9B69606C67CE85Dc92}) on 2026-06-08, with evidence archived in \texttt{docs/evaluation/}.
+Three end-to-end scenarios from \texttt{docs/EVALUATION.md} were executed on Ethereum Sepolia testnet (Appendix~\ref{app:repro}) on 2026-06-08, with evidence archived in \path{docs/evaluation/}.
 
 \paragraph{Scenario A (happy path).}
-Scenario~A (batch \#1): producer registration and auditor verification on Ethereum Sepolia testnet; consumer page at \texttt{/verify/1} displays verified status.
+Scenario~A (batch \#1): producer registration and auditor verification on Ethereum Sepolia testnet; consumer page at \url{https://web-six-ivory-36.vercel.app/verify/1} displays verified status.
 
 \paragraph{Scenario B (rejection and revision).}
-Scenario~B: batch \#2 rejected, revision batch \#3 verified with parent link preserved.
+Scenario~B: batch \#2 rejected (\url{https://web-six-ivory-36.vercel.app/verify/2}), revision batch \#3 verified (\url{https://web-six-ivory-36.vercel.app/verify/3}) with parent link preserved.
 
 \paragraph{Scenario C (tamper resistance).}
 Scenario~C: \texttt{verifyBatch} on rejected batch \#2 reverts (\texttt{InvalidStatus}); on-chain state unchanged.
@@ -82,7 +82,7 @@ These figures are \textbf{not} reported as Base Sepolia costs---opcode pricing a
 \label{sec:eval-b}
 
 Table~\ref{tab:gas} reports gas usage and transaction costs measured on Ethereum Sepolia (chain ID 11155111) on 2026-06-08.
-Contract address: \texttt{0x0Ccf5d905787E5E7EA698469fAe38a1517Ff8c29}.
+Gas-benchmark contract: \url{https://sepolia.etherscan.io/address/0x0Ccf5d905787E5E7EA698469fAe38a1517Ff8c29}.
 All values were captured from on-chain receipts via \texttt{npm run evaluate:gas:eth-sepolia} and cross-checked on Etherscan.
 
 \begin{table}[t]
@@ -103,5 +103,5 @@ All values were captured from on-chain receipts via \texttt{npm run evaluate:gas
   \end{tabularx}
 \end{table}
 
-Planned metrics additionally include: block confirmation time (registration $\rightarrow$ verification), IPFS upload duration via Pinata, and consumer page time-to-first-byte on Vercel hosting.
+The consumer frontend is deployed on Vercel at \url{https://web-six-ivory-36.vercel.app/}; planned metrics additionally include block confirmation time (registration $\rightarrow$ verification), IPFS upload duration via Pinata, and consumer page time-to-first-byte on this host.
 Run \texttt{npm run evaluate:gas} in \texttt{contracts/} after Base Sepolia deployment (Appendix~\ref{app:repro}).
