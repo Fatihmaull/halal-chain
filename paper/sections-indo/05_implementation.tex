@@ -1,0 +1,64 @@
+\section{Implementasi}
+\label{sec:implementation}
+
+Tabel~\ref{tab:stack} merangkum tumpukan teknologi.
+Repositori sumber terbuka tersedia di \url{https://github.com/Fatihmaull/halal-chain}.
+
+\begin{table}[t]
+  \caption{Tumpukan teknologi implementasi HalalChain.}
+  \label{tab:stack}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.22\columnwidth}X@{}}
+    \toprule
+    \textbf{Lapisan} & \textbf{Teknologi} \\
+    \midrule
+    Blockchain & Solidity 0.8.20, OpenZeppelin 5.x, Base Sepolia (84532) \\
+    Pengembangan & Hardhat 3.7, Mocha/Chai (7 pengujian), skrip TypeScript \\
+    Frontend & Next.js 16, Wagmi v3, Viem 2.x, Tailwind CSS \\
+    Penyimpanan & IPFS via Pinata (\texttt{POST /api/ipfs/upload}) \\
+    Deployment & \makecell[tl]{Hardhat (\texttt{deploy:local},\\\texttt{deploy:base-sepolia}), Vercel} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Kontrak Pintar}
+Kontrak \texttt{HalalChain} memperluas OpenZeppelin \texttt{AccessControl}~\cite{openzeppelin2024access}, menggantikan pemetaan auditor pemilik tunggal sebelumnya dengan peran eksplisit yang dapat diberikan oleh \texttt{DEFAULT\_ADMIN\_ROLE}.
+Konstruktor menetapkan admin ke deployer; skrip deployment secara opsional memberikan peran produsen dan auditor ke alamat yang dikonfigurasi untuk demo testnet.
+
+Pengujian unit (\texttt{contracts/test/HalalChain.test.ts}) mencakup:
+\begin{itemize}
+  \item pendaftaran batch dan penugasan \texttt{nextBatchId} monoton;
+  \item verifikasi dan penolakan dengan penegakan peran;
+  \item revisi setelah penolakan dengan penjaga \texttt{NotOriginalProducer} dan \texttt{ParentNotRejected};
+  \item pencabutan dari status Verified;
+  \item panggilan tidak berwenang dari alamat tanpa \texttt{PRODUCER\_ROLE} atau \texttt{AUDITOR\_ROLE};
+  \item pencarian \texttt{batchId} tidak valid yang gagal dengan \texttt{InvalidBatch}.
+\end{itemize}
+
+Skrip Hardhat meliputi \texttt{deploy.ts} (lokal atau Base Sepolia), \texttt{export-abi.ts} (salinan ABI ke \texttt{web/src/contracts/}), dan \texttt{evaluate-gas.ts} (agregasi gas receipt untuk skenario evaluasi).
+
+\subsection{Aplikasi Web}
+Tiga dasbor spesifik peran berbagi tata letak umum dan string dwibahasa (Inggris/Indonesia):
+
+\textbf{Dasbor produsen} memandu pengguna melalui penamaan produk, unggah multi-berkas, pinning IPFS, dan pengiriman \texttt{registerBatch}.
+Setelah konfirmasi, UI menampilkan \texttt{batchId} yang ditetapkan, hash transaksi, dan kode QR yang mengarah ke URL verifikasi konsumen.
+Riwayat batch mencantumkan registrasi sebelumnya dengan lencana status dan tautan ke batch induk jika berlaku.
+
+\textbf{Dasbor auditor} menyajikan antrean tertunda yang diambil melalui iterasi \texttt{getBatch} atau log peristiwa.
+Auditor membuka tautan dokumen IPFS di tab baru, lalu mengirim \texttt{verifyBatch}, \texttt{rejectBatch} (dengan teks alasan), atau \texttt{revokeBatch} melalui tulisan terhubung dompet.
+Modal konfirmasi mengurangi perubahan status yang tidak disengaja.
+
+\textbf{Halaman verifikasi konsumen} (\texttt{/verify/[batchId]}) melakukan panggilan RPC read-only.
+Halaman merender hijau ``Halal Certified'' / ``Tersertifikasi Halal'' untuk batch Verified, pesan penolakan merah dengan \texttt{rejectReason} untuk batch Rejected, dan status pending/revoked netral untuk sisanya.
+Tautan batch induk memungkinkan ketertelusuran melintasi rantai revisi.
+
+\subsection{Alur Unggah IPFS}
+Rute API Next.js (\texttt{POST /api/ipfs/upload}) menerima unggah berkas \texttt{multipart/form-data}, mem-pin melalui JWT Pinata sisi server, dan mengembalikan muatan JSON CID ke klien.
+Variabel lingkungan \texttt{PINATA\_JWT} diperlukan untuk pinning produksi; ketika tidak ada, mode mock pengembangan menghasilkan CID lokal deterministik agar alur UI tetap dapat diuji tanpa layanan eksternal.
+Tolok ukur yang dimaksudkan untuk publikasi (Bagian~\ref{sec:eval-b}) hanya akan menggunakan pin Pinata nyata.
+
+\subsection{Konfigurasi dan Deployment}
+Variabel lingkungan frontend meliputi \texttt{NEXT\_PUBLIC\_HALALCHAIN\_ADDRESS}, \texttt{NEXT\_PUBLIC\_CHAIN\_ID}, \texttt{NEXT\_PUBLIC\_SEPOLIA\_RPC\_URL}, dan \texttt{NEXT\_PUBLIC\_DEMO\_URL} untuk URL dasar QR.
+Dasbor konsumen di-deploy pada Vercel (\url{https://web-six-ivory-36.vercel.app/}); deployment kontrak pada Ethereum Sepolia atau Base Sepolia memerlukan \texttt{DEPLOYER\_PRIVATE\_KEY} dan ETH dari faucet (Lampiran~\ref{app:repro}).

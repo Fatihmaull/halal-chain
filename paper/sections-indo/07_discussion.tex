@@ -1,0 +1,51 @@
+\section{Diskusi}
+\label{sec:discussion}
+
+\subsection{Asumsi Kepercayaan dan Keterbatasan}
+Kami menyatakan secara eksplisit asumsi kepercayaan berikut agar pengadopsi dapat menalar risiko residual:
+
+\begin{enumerate}
+  \item \textbf{Kejujuran administrator} --- \texttt{DEFAULT\_ADMIN\_ROLE} memberikan hak istimewa auditor dan produsen.
+  Kompromi kunci admin atau kolusi dengan auditor jahat merusak integritas sertifikasi meskipun log permanen.
+  \item \textbf{Ketelitian auditor} --- catatan on-chain membuktikan bahwa alamat auditor menyetujui batch pada waktu tertentu; catatan tidak secara kriptografis membuktikan kepatuhan halal bahan, metode penyembelihan, atau perilaku pemasok.
+  HalalChain adalah \emph{jejak audit}, bukan klasifikator halal otomatis.
+  \item \textbf{Ketersediaan pinning IPFS} --- dokumen memerlukan pin Pinata (atau self-hosted) yang aktif.
+  CID yang tidak dipin atau kedaluwarsa menjadi tidak tersedia off-chain sementara CID on-chain tetap ada, menghasilkan status referensi ``menggantung'' yang harus ditafsirkan konsumen dengan hati-hati.
+  \item \textbf{Kelangsungan sequencer L2} --- Base mengandalkan infrastruktur rollup; gangguan berkepanjangan menunda tulisan tetapi tidak mengubah status yang dikomitkan secara diam-diam.
+  \item \textbf{Ruang lingkup testnet} --- evaluasi pada Base Sepolia tidak menyiratkan integrasi BPJPH produksi, kesetaraan hukum dengan registrasi SIHALAL, atau kesiapan mainnet tanpa tinjauan tata kelola dan manajemen kunci lebih lanjut.
+\end{enumerate}
+
+Keterbatasan ini sebagian membatasi persyaratan desain \emph{Adl} (keadilan) hingga tata kelola auditor multi-tanda tangan atau penugasan peran berbasis DAO diimplementasikan~\cite{gnosis2024safe}.
+Versi mendatang dapat mensyaratkan persetujuan auditor \texttt{m}-dari-\texttt{n} untuk verifikasi, menyelaraskan kebijakan on-chain dengan lembaga halal institusional.
+
+\subsection{Perbandingan dengan Alternatif Terpusat}
+Basis data terpusat menawarkan kompleksitas operasional lebih rendah, alat SQL yang familiar, dan integrasi alur kerja BPJPH yang mudah~\cite{underwood2016blockchain,viriyasitavat2019blockchain}.
+Administrator dapat mencabut akses, memperbaiki kesalahan ketik, dan menjalankan laporan batch tanpa biaya gas.
+Namun, model terpusat memungkinkan alterasi catatan retroaktif oleh pengguna berhak dan tidak menyediakan verifikasi pihak ketiga tanpa izin---konsumen harus mempercayai respons API operator.
+
+HalalChain menukar properti ini dengan verifikabilitas publik dan jejak audit tambah-saja.
+Produsen dan auditor harus mengelola dompet Ethereum dan ETH (atau ETH yang di-bridge pada Base) untuk tulisan; pinning IPFS menimbulkan biaya berulang atau per-GB.
+Bagi produsen UMKM, onboarding bersubsidi (meta-transaksi, paymaster, atau sponsor institusional) mungkin diperlukan untuk adopsi skala besar.
+
+Dibandingkan blockchain enterprise (Hyperledger), HalalChain lebih mengutamakan transparansi daripada privasi transaksi: status batch dapat dibaca dunia.
+Sertifikasi halal pada dasarnya adalah \emph{klaim publik}; saluran privat mungkin penting untuk formulasi rahasia dagang tetapi di luar ruang lingkup v1.
+
+\subsection{Implikasi bagi UMKM dan Kebijakan}
+Mandat pelabelan halal Indonesia menciptakan permintaan alat ketertelusuran terjangkau.
+HalalChain menunjukkan arsitektur referensi yang dapat dipilot oleh lembaga terakreditasi BPJPH, koperasi regional, atau tim KKN universitas tanpa melisensikan platform proprietari.
+Integrasi dengan SIHALAL memerlukan akses API resmi, pemetaan hukum status on-chain ke nomor registrasi, dan alur kerja akreditasi auditor---tidak ada yang diimplementasikan pada prototipe.
+
+Pasar ekspor semakin mengharapkan ketertelusuran digital~\cite{marianingsih2024halal}.
+Halaman verifikasi publik tertaut QR dapat melengkapi label fisik, meskipun penerimaan regulasi bervariasi menurut negara tujuan.
+
+\subsection{Penelitian Lanjutan}
+Arah masa depan meliputi:
+\begin{itemize}
+  \item verifikasi auditor multi-tanda tangan dan pencabutan terkunci waktu;
+  \item pemilihan auditor berbasis DAO dengan modul stake atau reputasi;
+  \item deployment Base mainnet dengan dasbor pemantauan biaya;
+  \item pengaitan sensor IoT (suhu, GPS) melalui jaringan oracle;
+  \item integrasi dengan BPJPH SIHALAL jika API tersedia;
+  \item verifikasi formal transisi FSM di \texttt{HalalChain.sol};
+  \item studi pengguna dengan produsen UMKM dan konsumen tentang kegunaan onboarding dompet dan verifikasi QR.
+\end{itemize}

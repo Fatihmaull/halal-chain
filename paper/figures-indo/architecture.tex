@@ -1,0 +1,64 @@
+\begin{figure}[!t]
+  \centering
+  \resizebox{\columnwidth}{!}{%
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    >=Stealth,
+    actor/.style={
+      draw,
+      rounded corners=2pt,
+      line width=0.4pt,
+      fill=gray!6,
+      minimum width=2.05cm,
+      minimum height=0.9cm,
+      align=center,
+      inner sep=4pt
+    },
+    core/.style={
+      draw,
+      rounded corners=2pt,
+      line width=0.5pt,
+      fill=gray!14,
+      minimum width=2.35cm,
+      minimum height=0.95cm,
+      align=center,
+      inner sep=4pt
+    },
+    store/.style={
+      draw,
+      rounded corners=2pt,
+      line width=0.4pt,
+      fill=gray!10,
+      minimum width=2.05cm,
+      minimum height=0.9cm,
+      align=center,
+      inner sep=4pt
+    },
+    lbl/.style={
+      font=\scriptsize,
+      fill=white,
+      inner sep=1.5pt,
+      text=black
+    }
+  ]
+    \node[actor] (producer) {Produsen\\UMKM};
+    \node[store, right=1.25cm of producer] (ipfs) {IPFS\\Pinata};
+    \node[core] at ($(producer)!0.5!(ipfs) + (0,-1.45)$) (chain) {Base L2\\HalalChain.sol};
+
+    \node[actor, below left=1.05cm and 0.55cm of chain] (consumer) {Konsumen\\verifikasi QR};
+    \node[actor, below right=1.05cm and 0.55cm of chain] (auditor) {Auditor};
+
+    \draw[->, thick] (producer.east) -- node[lbl, above]{unggah dok.} (ipfs.west);
+    \draw[->, thick] (producer.south) -- ++(0,-0.55) -|
+      node[lbl, pos=0.2, below]{registerBatch} (chain.west);
+
+    \draw[->, thick, dashed] (ipfs.south) -- node[lbl, right]{simpan CID} (chain.north);
+
+    \draw[->, thick] (chain.south west) -- node[lbl, left, pos=0.35]{baca status} (consumer.north);
+    \draw[->, thick] (auditor.north) -- node[lbl, right, pos=0.35]{verifikasi / tolak} (chain.south east);
+
+  \end{tikzpicture}%
+  }
+  \caption{Arsitektur HalalChain: dokumen pada IPFS, jangkar dan status pada Base L2.}
+  \label{fig:arch}
+\end{figure}

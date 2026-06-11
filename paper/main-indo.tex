@@ -1,0 +1,83 @@
+%% HalalChain — versi Bahasa Indonesia
+%% Build: pdflatex main-indo; bibtex main-indo; pdflatex main-indo; pdflatex main-indo
+
+\documentclass[journal]{IEEEtran}
+
+\IEEEoverridecommandlockouts
+
+\usepackage[indonesian]{babel}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{makecell}
+\usepackage{placeins}
+\usepackage{fancyvrb}
+\usepackage{fvextra}
+\usepackage{xurl}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{figures-indo/}}
+
+\DefineVerbatimEnvironment{Code}{Verbatim}{%
+  fontsize=\scriptsize,
+  breaklines=true,
+  breakanywhere=true,
+  xleftmargin=0pt,
+  xrightmargin=0pt
+}
+
+\begin{document}
+
+\title{HalalChain: Protokol Ketertelusuran Batch Halal pada Base L2 dengan Integrasi Persyaratan Desain Etis Islam dan Jejak Audit Permanen}
+
+\author{%
+  \IEEEauthorblockN{Muhammad Fatih Maulana\IEEEauthorrefmark{1},
+  Rio Ferdana Sudrajat\IEEEauthorrefmark{1},
+  Muhammad Rahardian Baihaqi\IEEEauthorrefmark{1},\\
+  Muhammad Fahriza Pratama\IEEEauthorrefmark{1},
+  Yazid Zinky Arisona\IEEEauthorrefmark{1},
+  dan Muhammad Fauzan Lubada\IEEEauthorrefmark{1}}
+  \IEEEauthorblockA{\IEEEauthorrefmark{1}%
+  Universitas Islam Negeri Sunan Gunung Djati Bandung, Bandung, Indonesia}
+}
+
+\markboth{HalalChain: Ketertelusuran Batch pada Base L2}{HalalChain: Ketertelusuran Batch pada Base L2}
+
+\maketitle
+
+\input{sections-indo/00_abstract}
+\input{sections-indo/01_introduction}
+\input{sections-indo/02_related_work}
+\input{sections-indo/03_preliminaries}
+\input{sections-indo/04_system_design}
+\input{sections-indo/05_implementation}
+\input{sections-indo/06_evaluation}
+\input{sections-indo/07_discussion}
+\input{sections-indo/08_conclusion}
+
+\section*{Kontribusi Penulis}
+Muhammad Fatih Maulana, Rio Ferdana Sudrajat, Muhammad Rahardian Baihaqi, Muhammad Fahriza Pratama, Yazid Zinky Arisona, dan Muhammad Fauzan Lubada berkontribusi pada konseptualisasi, pengembangan perangkat lunak, validasi, dan penulisan.
+Seluruh penulis telah membaca dan menyetujui versi terbitan naskah ini.
+
+\section*{Pernyataan Ketersediaan Data}
+Kode sumber, kontrak pintar, dan skrip evaluasi tersedia di \url{https://github.com/Fatihmaull/halal-chain}.
+Demonstrasi langsung untuk konsumen di-deploy di \url{https://web-six-ivory-36.vercel.app/}.
+
+\section*{Konflik Kepentingan}
+Penulis menyatakan tidak ada konflik kepentingan.
+
+\appendices
+\input{sections-indo/appendix_reproducibility}
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

@@ -1,0 +1,13 @@
+\begin{abstract}
+Ekonomi halal global melampaui USD~2 triliun dalam belanja konsumen, namun kepercayaan terhadap sertifikasi masih rapuh: sertifikat fisik dapat dipalsukan, basis data perusahaan dapat diubah oleh administrator yang berwenang, dan konsumen jarang memperoleh bukti tingkat batch pada saat pembelian.
+Regulasi pelabelan halal wajib di Indonesia (BPJPH/MUI) memperkuat kebutuhan ketertelusuran yang dapat diverifikasi dan berbiaya rendah bagi usaha mikro, kecil, dan menengah (UMKM) yang tidak mampu memakai platform blockchain kelas enterprise.
+Makalah ini memperkenalkan \emph{HalalChain}, protokol ketertelusuran batch terdesentralisasi yang di-deploy pada Base Network---rollup Ethereum Layer~2---yang mengaitkan \emph{status} sertifikasi, pengenal konten (CID), dan metadata audit pada ledger publik, sementara dokumen pendukung (PDF, laporan laboratorium, daftar bahan) disimpan pada InterPlanetary File System (IPFS).
+Kontribusi kami meliputi: (i)~desain kontrak pintar minimal tiga peran dengan kontrol akses berbasis peran (RBAC) OpenZeppelin dan riwayat revisi permanen setelah penolakan auditor; (ii)~pemetaan eksplisit dari persyaratan \emph{desain etis} selaras Maqasid ke properti protokol yang dapat ditegakkan; (iii)~implementasi sumber terbuka yang terdiri atas kontrak Solidity, pengujian Hardhat, dan dasbor web produsen/auditor/konsumen dwibahasa dengan verifikasi QR tanpa dompet kripto bagi konsumen.
+Bagian~\ref{sec:eval} melaporkan analisis keamanan kualitatif dan pengujian skenario fungsional; pada testnet Ethereum Sepolia, \texttt{registerBatch} menggunakan 155.506 gas (0,00078367 ETH) dan \texttt{verifyBatch} menggunakan 79.214 gas (0,00034832 ETH).
+HalalChain menunjukkan bahwa integritas batch halal dapat diaudit secara publik tanpa mewajibkan konsumen mengoperasikan dompet kripto.
+Prototipe langsung tersedia di \url{https://web-six-ivory-36.vercel.app/}.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Blockchain, ketertelusuran halal, rantai pasok, IPFS, Base Network, kontrak pintar, penskalaan Layer~2, etika Islam, RBAC
+\end{IEEEkeywords}

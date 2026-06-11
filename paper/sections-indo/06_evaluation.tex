@@ -1,0 +1,107 @@
+\section{Evaluasi}
+\label{sec:eval}
+
+Kami menyusun evaluasi dalam dua tingkat selaras dengan kematangan deployment: (VI-A) analisis kualitatif dan validasi fungsional yang tersedia pada jaringan Hardhat lokal saat ini; dan (VI-B) tolok ukur kuantitatif Base Sepolia yang menunggu deployment testnet berdana.
+Pemisahan ini menghindari pencampuran pengukuran mesin pengembang dengan biaya jaringan publik~\cite{casino2021systematic}.
+
+\subsection{Analisis Kualitatif dan Validasi Fungsional}
+\label{sec:eval-a}
+
+\subsubsection{Properti Keamanan}
+Tabel~\ref{tab:security} memetakan persyaratan desain dari Bagian~\ref{sec:prelim} ke perilaku protokol yang dapat diamati, divalidasi oleh pengujian unit dan eksekusi skenario manual.
+
+\begin{table}[t]
+  \caption{Properti keamanan dan metode validasi.}
+  \label{tab:security}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.34\columnwidth}X@{}}
+    \toprule
+    \textbf{Properti} & \textbf{Validasi} \\
+    \midrule
+    Ketidakberubahan penolakan & \texttt{verifyBatch} pada Rejected gagal \\
+    Ketertelusuran revisi & \texttt{parentBatchId} dipertahankan; alasan induk dapat dibaca \\
+    Pemisahan peran & Non-produsen tidak dapat mendaftar; non-auditor tidak dapat memverifikasi \\
+    Identitas batch & \texttt{batchId} tidak valid gagal pada semua mutator \\
+    Integritas pencabutan & Hanya Verified $\rightarrow$ Revoked diizinkan \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{Ketidakberubahan.}
+Setelah \texttt{rejectBatch} dieksekusi, \texttt{verifyBatch} pada pengenal yang sama gagal dengan \texttt{InvalidStatus}.
+Skenario~C (di bawah) mengonfirmasi bahwa upaya verifikasi berulang tidak mengubah status on-chain---mendukung \emph{Amanah}.
+
+\paragraph{Ketertelusuran revisi.}
+\texttt{registerRevision} membuat \texttt{batchId} baru sambil menyimpan \texttt{parentBatchId}.
+Konsumen yang memeriksa revisi terverifikasi dapat menavigasi ke induk yang ditolak dan membaca \texttt{rejectReason} serta \texttt{ipfsCid} aslinya, mendukung transparansi audit.
+
+\paragraph{Kontrol akses.}
+Modifier OpenZeppelin \texttt{onlyRole} mengawal fungsi mutasi.
+Pengujian memastikan alamat tidak berwenang tidak dapat mendaftar, memverifikasi, menolak, atau mencabut, mengatasi kekhawatiran eskalasi hak istimewa dasar pada prototipe v1.
+
+\subsubsection{Skenario Fungsional}
+Tiga skenario end-to-end dari \texttt{docs/EVALUATION.md} dieksekusi pada testnet Ethereum Sepolia (Lampiran~\ref{app:repro}) pada 2026-06-08, dengan bukti diarsipkan di \path{docs/evaluation/}.
+
+\paragraph{Skenario A (jalur sukses).}
+Skenario~A (batch \#1): pendaftaran produsen dan verifikasi auditor pada testnet Ethereum Sepolia; halaman konsumen di \url{https://web-six-ivory-36.vercel.app/verify/1} menampilkan status terverifikasi.
+
+\paragraph{Skenario B (penolakan dan revisi).}
+Skenario~B: batch \#2 ditolak (\url{https://web-six-ivory-36.vercel.app/verify/2}), revisi batch \#3 terverifikasi (\url{https://web-six-ivory-36.vercel.app/verify/3}) dengan tautan induk dipertahankan.
+
+\paragraph{Skenario C (ketahanan manipulasi).}
+Skenario~C: \texttt{verifyBatch} pada batch ditolak \#2 gagal (\texttt{InvalidStatus}); status on-chain tidak berubah.
+
+Validasi fungsional pada Ethereum Sepolia mengonfirmasi kebenaran protokol dan baca konsumen tanpa dompet melalui frontend Next.js; biaya gas pada testnet L1 membatasi atas kelayakan deployment L2~\cite{optimism2024spec}.
+
+
+\subsubsection{Observasi Gas Jaringan Pengembangan}
+Receipt Hardhat localhost menyediakan penggunaan gas \emph{awal} untuk penentuan ukuran kontrak (Tabel~\ref{tab:gas-local}).
+Angka ini \textbf{bukan} dilaporkan sebagai biaya Base Sepolia---harga opcode dan biaya data L1 berbeda pada rollup~\cite{optimism2024spec}.
+
+\begin{table}[t]
+  \caption{Gas awal pada Hardhat localhost (hanya pengembangan; bukan Base Sepolia).}
+  \label{tab:gas-local}
+  \centering
+  \footnotesize
+  \begin{tabularx}{\columnwidth}{@{}Xr@{}}
+    \toprule
+    \textbf{Operasi} & \textbf{Gas Digunakan} \\
+    \midrule
+    \texttt{registerBatch} & 155{,}506 \\
+    \texttt{verifyBatch} & 79{,}214 \\
+    \texttt{rejectBatch} & 103{,}533 \\
+    \texttt{registerRevision} & 181{,}835 \\
+    \texttt{getBatch} (view) & 0 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Tolok Ukur Kuantitatif Testnet}
+\label{sec:eval-b}
+
+Tabel~\ref{tab:gas} melaporkan penggunaan gas dan biaya transaksi yang diukur pada Ethereum Sepolia (chain ID 11155111) pada 2026-06-08.
+Kontrak tolok ukur gas: \url{https://sepolia.etherscan.io/address/0x0Ccf5d905787E5E7EA698469fAe38a1517Ff8c29}.
+Semua nilai diambil dari receipt on-chain melalui \texttt{npm run evaluate:gas:eth-sepolia} dan diverifikasi silang pada Etherscan.
+
+\begin{table}[t]
+  \caption{Metrik gas dan biaya pada Ethereum Sepolia (2026-06-08).}
+  \label{tab:gas}
+  \centering
+  \footnotesize
+  \begin{tabularx}{\columnwidth}{@{}Xrr@{}}
+    \toprule
+    \textbf{Operasi} & \textbf{Gas Digunakan} & \textbf{Biaya (ETH)} \\
+    \midrule
+    \texttt{registerBatch} & 155,506 & 0,00078367 \\
+    \texttt{verifyBatch} & 79,214 & 0,00034832 \\
+    \texttt{rejectBatch} & 103,533 & 0,00055169 \\
+    \texttt{registerRevision} & 181,835 & 0,00096602 \\
+    \texttt{getBatch} (baca RPC) & 0 & 0 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Frontend konsumen di-deploy pada Vercel di \url{https://web-six-ivory-36.vercel.app/}; metrik yang direncanakan meliputi waktu konfirmasi blok (pendaftaran $\rightarrow$ verifikasi), durasi unggah IPFS via Pinata, dan time-to-first-byte halaman konsumen pada host ini.
+Jalankan \texttt{npm run evaluate:gas} di \texttt{contracts/} setelah deployment Base Sepolia (Lampiran~\ref{app:repro}).

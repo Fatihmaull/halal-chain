@@ -1,0 +1,13 @@
+\section{Kesimpulan}
+\label{sec:conclusion}
+
+Makalah ini memperkenalkan HalalChain, protokol ketertelusuran batch untuk sertifikasi halal yang menggabungkan catatan audit permanen on-chain pada Base L2 dengan penyimpanan dokumen IPFS off-chain.
+Kami mengatasi defisit kepercayaan akibat pemalsuan sertifikat dan manipulasi terpusat dengan mengodekan pendaftaran produsen, keputusan auditor, dan riwayat revisi sebagai transisi status terbatas eksplisit yang ditegakkan oleh kontrak pintar Solidity dengan RBAC OpenZeppelin.
+
+Kontribusi meliputi: (i)~arsitektur tiga peran minimal yang memungkinkan verifikasi konsumen tanpa dompet melalui URL tertaut QR; (ii)~penolakan permanen dan revisi terstruktur melalui tautan \texttt{parentBatchId}; (iii)~pemetaan persyaratan desain etis selaras Maqasid ke properti protokol yang dapat diuji; dan (iv)~implementasi sumber terbuka dengan pengujian unit, skenario fungsional, dan pipeline evaluasi yang dapat direproduksi.
+
+Evaluasi kualitatif mengonfirmasi ketahanan manipulasi pada batch ditolak, kontrol akses berbasis peran, dan integrasi dasbor end-to-end pada jaringan lokal.
+Pengukuran gas localhost awal menunjukkan gas di bawah 200k untuk operasi tulis utama, mengisyaratkan kelayakan deployment L2 bagi produsen UMKM, meskipun tolok ukur Base Sepolia masih menunggu deployment berdana.
+
+HalalChain bukan pengganti penetapan halal BPJPH/MUI; HalalChain menyediakan bukti transparan tentang \emph{auditor mana} menyetujui \emph{dokumen batch mana} pada \emph{waktu mana}.
+Penelitian lanjutan akan mengatasi tata kelola auditor terdesentralisasi, optimasi biaya mainnet, dan pilot berorientasi kebijakan dengan pemangku kepentingan sertifikasi halal Indonesia.

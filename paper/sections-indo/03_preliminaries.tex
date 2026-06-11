@@ -1,0 +1,55 @@
+\section{Prasyarat: Konteks Kepercayaan Halal dan Persyaratan Desain Etis}
+\label{sec:prelim}
+
+Bagian ini memberikan latar kontekstual tentang kesenjangan kepercayaan sertifikasi halal dan menurunkan \emph{persyaratan desain rekayasa} dari prinsip etis Islam.
+Bagian ini bukan putusan agama (fatwa); melainkan menginformasikan desain sistem secara analog dengan value-sensitive design, di mana pertimbangan moral membentuk pilihan teknis tanpa menggantikan keahlian domain~\cite{friedman2017value}.
+
+\subsection{Konteks Sertifikasi Halal di Indonesia}
+Ekosistem sertifikasi halal Indonesia melibatkan registrasi BPJPH, klasifikasi produk, dan audit MUI untuk banyak kategori~\cite{sidarto2021halal,bpjph2022regulation}.
+Produsen mengajukan deklarasi bahan, deskripsi proses, dan dukungan laboratorium atau atestasi pemasok.
+Setelah disetujui, label halal dapat diterapkan pada produk atau lini produksi tertentu; pasar ekspor semakin meminta bukti ketertelusuran di luar label itu sendiri~\cite{marianingsih2024halal}.
+
+Masalah yang dilaporkan meliputi pemalsuan sertifikat, pelabelan ulang batch tidak tersertifikasi, dan ketidakmampuan konsumen memverifikasi klaim tingkat batch secara mandiri pada titik pembelian~\cite{rashid2018halal,kshetri2018blockchain}.
+Produsen UMKM---produsen pangan skala kecil, industri rumahan yang berkembang, dan koperasi regional---sering tidak memiliki staf TI untuk mengoperasikan suite ketertelusuran enterprise.
+HalalChain oleh karena itu menargetkan atestasi \emph{tingkat batch} dengan field on-chain minimal dan halaman verifikasi konsumen ramah seluler.
+
+\subsection{Aktor dan Batas Kepercayaan}
+Empat kelas aktor berinteraksi dengan protokol:
+\begin{itemize}
+  \item \textbf{Produsen (UMKM):} Mendaftarkan batch dan mengunggah bukti ke IPFS; tidak dapat memverifikasi status halal sendiri.
+  \item \textbf{Auditor:} Meninjau bukti dan mengubah status batch menjadi Verified, Rejected, atau Revoked; tindakan ditandatangani on-chain.
+  \item \textbf{Konsumen:} Membaca status batch publik melalui URL tertaut QR; tidak memegang kunci atau token.
+  \item \textbf{Administrator:} Memberikan \texttt{PRODUCER\_ROLE} dan \texttt{AUDITOR\_ROLE}; titik sempit kepercayaan dibahas di Bagian~\ref{sec:discussion}.
+\end{itemize}
+Protokol \emph{tidak} secara otomatis memvalidasi kimia bahan atau metode penyembelihan; protokol mencatat \emph{auditor mana} menyetujui \emph{dokumen mana} pada \emph{waktu mana}, mengalihkan kepercayaan dari basis data tidak transparan ke catatan yang dapat diperiksa.
+
+\subsection{Dari Prinsip ke Persyaratan Desain}
+Prinsip etis Islam menginformasikan \emph{apa} yang harus dioptimalkan sistem, diekspresikan sebagai properti yang dapat diuji.
+Kami memilih empat prinsip yang sering dikutip dalam literatur rantai pasok halal dan memetakannya ke mekanisme HalalChain pada Tabel~\ref{tab:ethics}.
+
+\begin{table}[t]
+  \caption{Pemetaan persyaratan desain etis ke implementasi HalalChain.}
+  \label{tab:ethics}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.24\columnwidth}>{\raggedright\arraybackslash}p{0.26\columnwidth}X@{}}
+    \toprule
+    \textbf{Prinsip} & \textbf{Persyaratan} & \textbf{Implementasi} \\
+    \midrule
+    Amanah (kepercayaan) & Catatan audit permanen & Transisi status tambah-saja; batch ditolak tidak dapat diverifikasi ulang \\
+    Thoyyib (kesucian) & Tampilan halal hanya jika terverifikasi & UI konsumen menampilkan sertifikasi hanya jika \texttt{status = Verified} \\
+    Adl (keadilan) & Akses data terdistribusi & Baca rantai publik + gateway IPFS; tidak ada gerbang vendor tunggal untuk status \\
+    Hisba (akuntabilitas) & Atribusi auditor & Alamat \texttt{auditor}, \texttt{auditedAt}, \texttt{auditIpfsCid} opsional \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\emph{Amanah} dioperasionalkan oleh penjaga kontrak pintar: setelah \texttt{rejectBatch} dieksekusi, \texttt{verifyBatch} pada \texttt{batchId} yang sama gagal dengan \texttt{InvalidStatus}, mencegah ``persetujuan'' retroaktif atas batch yang gagal.
+\emph{Thoyyib} muncul di dasbor konsumen, yang menampilkan indikator halal positif hanya untuk batch Verified---status Pending dan Rejected menampilkan pesan tidak tersertifikasi eksplisit dalam bahasa Inggris dan Indonesia.
+\emph{Adl} sebagian terpenuhi oleh akses baca publik tetapi dibatasi karena penugasan peran tetap terpusat di bawah \texttt{DEFAULT\_ADMIN\_ROLE}.
+\emph{Hisba} mengikat setiap keputusan ke alamat Ethereum dan cap waktu blok, memungkinkan akuntabilitas pasca-hoc jika kunci auditor diketahui.
+
+Prototipe saat ini memberikan \texttt{AUDITOR\_ROLE} melalui administrator (OpenZeppelin \texttt{DEFAULT\_ADMIN\_ROLE}), yang sebagian membatasi \emph{Adl}; Bagian~\ref{sec:discussion} membahas mitigasi multi-tanda tangan dan berbasis DAO~\cite{gnosis2024safe}.
+
+\FloatBarrier

@@ -14,12 +14,13 @@ Do **not** commit `IEEEtran.cls` — it ships with TeX Live / Overleaf.
 
 ```bash
 cd paper
-make pdf      # builds main.pdf
-make clean    # remove aux files
-make watch    # latexmk continuous preview (if installed)
+make pdf           # builds main.pdf (English)
+make pdf-indo      # builds main-indo.pdf (Bahasa Indonesia)
+make clean         # remove aux files
+make watch         # latexmk continuous preview (if installed)
 ```
 
-Manual build:
+Manual build (English):
 
 ```bash
 pdflatex main
@@ -28,13 +29,26 @@ pdflatex main
 pdflatex main
 ```
 
+Manual build (Indonesian):
+
+```bash
+pdflatex main-indo
+bibtex main-indo
+pdflatex main-indo
+pdflatex main-indo
+```
+
 ## Directory Structure
 
 ```
 paper/
-├── main.tex          # Root document
-├── sections/         # One file per section
-├── figures/          # TikZ and PDF figures
-├── tables/           # LaTeX table fragments
-└── references.bib    # BibTeX database
+├── main.tex              # Root document (English)
+├── main-indo.tex         # Root document (Bahasa Indonesia)
+├── sections/             # English sections
+├── sections-indo/        # Indonesian sections
+├── figures/              # English figures
+├── figures-indo/         # Indonesian figures
+├── tables/               # English tables
+├── tables-indo/          # Indonesian tables
+└── references.bib        # BibTeX database (shared)
 ```

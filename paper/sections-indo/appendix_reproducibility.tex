@@ -1,0 +1,77 @@
+\section{Reproduksibilitas}
+\label{app:repro}
+
+\subsection{Versi Perangkat Lunak}
+\begin{itemize}
+  \item Solidity 0.8.20, Hardhat 3.7, OpenZeppelin Contracts 5.x
+  \item Next.js 16.2, Wagmi 3.6, Viem 2.52
+  \item Node.js 20+ direkomendasikan; npm 10+
+\end{itemize}
+
+\subsection{Tata Letak Repositori}
+Repositori diorganisasi sebagai berikut (GitHub: \texttt{halal-chain}):
+
+\vspace{0.2em}
+\noindent\texttt{contracts/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+\texttt{HalalChain.sol}, pengujian unit, skrip deploy dan gas
+
+\vspace{0.15em}
+\noindent\texttt{web/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+Dasbor Next.js, API unggah IPFS, ABI kontrak
+
+\vspace{0.15em}
+\noindent\texttt{docs/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+\texttt{EVALUATION.md}, \texttt{BASELINE.md}, metrik localhost
+
+\vspace{0.15em}
+\noindent\texttt{paper/}\\
+\noindent\hspace{1.1em}\hangindent=1.1em\hangafter=0
+Sumber IEEEtran untuk naskah ini (Inggris: \texttt{main.tex}; Indonesia: \texttt{main-indo.tex})
+
+\subsection{Build dan Pengujian}
+\begin{Code}
+cd contracts && npm install && npm test
+npm run node
+npm run deploy:local
+cd ../web && npm install && npm run dev
+\end{Code}
+Jalankan \texttt{node} dan \texttt{deploy:local} di terminal terpisah.
+Tujuh pengujian unit harus lulus.
+Akun Hardhat default \#0 menerima \texttt{DEFAULT\_ADMIN\_ROLE} saat deploy; skrip memberikan peran produsen dan auditor ke akun \#1 dan \#2 untuk demo lokal.
+
+\subsection{Deployment Ethereum Sepolia}
+Konfigurasi \texttt{contracts/.env}:
+\begin{Code}
+DEPLOYER_PRIVATE_KEY=0x...
+PRODUCER_ADDRESS=0x...
+AUDITOR_ADDRESS=0x...
+BASE_SEPOLIA_RPC_URL=
+  https://sepolia.base.org
+\end{Code}
+Kemudian jalankan \texttt{npm run deploy:base-sepolia} dan \texttt{npm run evaluate:gas}.
+Danai deployer melalui faucet Base Sepolia sebelum menyiarkan transaksi.
+
+\subsection{Catatan Deployment}
+\begin{itemize}
+  \item Komit Git:\\
+  \url{https://github.com/Fatihmaull/halal-chain/commit/313f06c4ee329ac58a8c17eb3399802e077361be}
+  \item Kontrak (Ethereum Sepolia):\\
+  \url{https://sepolia.etherscan.io/address/0xDaCA688e86F438A7cD6B0C9B69606C67CE85Dc92}
+  \item Chain ID: 11155111 (Ethereum Sepolia)
+  \item Cap waktu evaluasi: 2026-06-08T12:37:38.107Z
+  \item Bundel bukti: \path{docs/evaluation/EVALUATION_REPORT.json}
+  \item Demo frontend:\\
+  \url{https://web-six-ivory-36.vercel.app/}
+  \item Verifikasi batch \#1 (terverifikasi):\\
+  \url{https://web-six-ivory-36.vercel.app/verify/1}
+  \item Verifikasi batch \#2 (ditolak):\\
+  \url{https://web-six-ivory-36.vercel.app/verify/2}
+  \item Verifikasi batch \#3 (revisi):\\
+  \url{https://web-six-ivory-36.vercel.app/verify/3}
+  \item Tutorial setup: \path{docs/ETH_SEPOLIA_SETUP.md}
+\end{itemize}
+
+Lihat \texttt{docs/BASELINE.md} untuk alamat dompet default Hardhat yang digunakan dalam pengembangan lokal.

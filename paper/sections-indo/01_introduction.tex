@@ -1,0 +1,38 @@
+\section{Pendahuluan}
+\label{sec:intro}
+
+Sertifikasi halal di Indonesia diatur oleh Badan Penyelenggara Jaminan Produk Halal (BPJPH) berdasarkan Undang-Undang No.~33/2014, dengan audit kategori produk yang sering melibatkan Majelis Ulama Indonesia (MUI).
+Meskipun kemajuan regulasi, konsumen dan pasar ekspor masih melaporkan kesenjangan kepercayaan: sertifikat palsu, rantai pasok yang tidak transparan, dan keterbatasan kemampuan menghubungkan produk ritel dengan batch produksi tertentu yang diaudit~\cite{sidarto2021halal,rashid2018halal}.
+Kekhawatiran serupa muncul dalam perdagangan halal lintas batas, di mana negara pengimpor tidak dapat secara mandiri memastikan bahwa label mencerminkan batch yang sama yang lulus sertifikasi domestik~\cite{marianingsih2024halal,rejeb2018halal}.
+
+\subsection{Pernyataan Masalah}
+Tiga kelemahan struktural mendorong penelitian ini.
+\textbf{Pertama}, sertifikat berbasis kertas atau PDF bersifat \emph{dapat disalin}---dokumen palsu dapat tampak autentik tanpa akses ke registri resmi.
+\textbf{Kedua}, basis data ketertelusuran terpusat---termasuk platform khusus halal dan sistem pangan generik---mengonsentrasikan wewenang tulis pada administrator yang pada prinsipnya dapat mengubah catatan historis~\cite{kshetri2018blockchain,underwood2016blockchain,viriyasitavat2019blockchain}.
+\textbf{Ketiga}, percontohan ketertelusuran blockchain publik (misalnya IBM Food Trust, VeChain) menargetkan rantai pasok enterprise dan umumnya memerlukan infrastruktur dompet, sehingga tidak terjangkau bagi produsen UMKM yang mendominasi sektor pangan halal Indonesia~\cite{kamath2018blockchain,kamilaris2019blockchain}.
+
+Teknologi blockchain menawarkan catatan kriptografis yang diamankan dan bersifat tambah-saja yang mendukung persyaratan desain \emph{Amanah} (kepercayaan)---kesaksian permanen dan tahan manipulasi tentang siapa menyetujui apa dan kapan~\cite{zheng2020overview,christidis2016blockchain}.
+Namun, men-deploy dokumen lengkap pada Ethereum mainnet tidak ekonomis untuk pendaftaran batch volume tinggi~\cite{benet2014ipfs,rejeb2020blockchain}.
+HalalChain mengatasi ketegangan ini dengan mengaitkan status minimal on-chain pada Base L2~\cite{base2024docs,optimism2024spec} sambil menyimpan bukti lengkap off-chain pada IPFS, serta mengodekan penolakan dan revisi auditor sebagai status protokol tingkat pertama, bukan koreksi di luar ledger.
+
+\subsection{Pertanyaan Penelitian}
+\begin{enumerate}
+  \item \textbf{PP1 (Biaya dan kelayakan):} Apakah arsitektur kontrak pintar minimal dapat menyediakan verifikasi batch halal permanen pada tingkat biaya L2 yang terjangkau bagi produsen UMKM?
+  \item \textbf{PP2 (Pertukaran arsitektur):} Bagaimana pemisahan on-chain/off-chain (IPFS) memengaruhi biaya gas, jaminan ketidakberubahan, dan ketersediaan dokumen?
+  \item \textbf{PP3 (Keselarasan etis):} Persyaratan desain etis Islam mana yang dapat dipetakan ke properti sistem yang dapat diverifikasi dan diuji tanpa menyamakan perilaku perangkat lunak dengan putusan agama?
+\end{enumerate}
+
+\subsection{Kontribusi}
+Makalah ini memberikan kontribusi sebagai berikut:
+\begin{enumerate}
+  \item \textbf{Desain protokol HalalChain}---model tiga peran (Produsen, Auditor, Konsumen) dengan RBAC OpenZeppelin~\cite{openzeppelin2024access}, status siklus batch eksplisit, dan riwayat revisi on-chain yang menghubungkan pengajuan ulang ke batch induk yang ditolak.
+  \item \textbf{Analisis arsitektur}---kajian pertukaran antara jangkar on-chain (CID, status, cap waktu, alamat auditor) dan dokumen off-chain pada IPFS~\cite{benet2014ipfs,caro2018blockchain}, termasuk jalur baca konsumen tanpa dompet.
+  \item \textbf{Pemetaan desain etis}---ketertelusuran dari persyaratan selaras Maqasid (Bagian~\ref{sec:prelim}) ke penegakan kontrak pintar, dibingkai sebagai persyaratan rekayasa, bukan fatwa.
+  \item \textbf{Implementasi terbuka dan kerangka evaluasi}---basis kode yang dapat direproduksi dengan tujuh pengujian unit, tiga skenario fungsional, dan validasi keamanan kualitatif (Bagian~\ref{sec:eval-a}); tolok ukur empiris testnet Ethereum Sepolia (Bagian~\ref{sec:eval-b}) dan validasi skenario fungsional (Bagian~\ref{sec:eval-a}).
+\end{enumerate}
+
+\subsection{Organisasi Makalah}
+Bagian~\ref{sec:related} meninjau literatur blockchain rantai pasok dan ketertelusuran halal.
+Bagian~\ref{sec:prelim} menetapkan konteks sertifikasi dan persyaratan desain etis.
+Bagian~\ref{sec:design}--\ref{sec:implementation} menjelaskan arsitektur, spesifikasi kontrak, dan implementasi web.
+Bagian~\ref{sec:eval} menyajikan evaluasi; Bagian~\ref{sec:discussion} membahas keterbatasan; Bagian~\ref{sec:conclusion} menyimpulkan.

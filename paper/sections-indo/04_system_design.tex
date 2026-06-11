@@ -1,0 +1,89 @@
+\section{Desain Sistem}
+\label{sec:design}
+
+\subsection{Gambaran Arsitektur}
+Gambar~\ref{fig:arch} mengilustrasikan arsitektur HalalChain melintasi penyimpanan dokumen off-chain dan pengaitan status on-chain.
+Produsen mengunggah dokumen pendukung ke IPFS melalui integrasi Pinata sisi server, memperoleh CID, dan memanggil \texttt{registerBatch} pada Base L2 dengan CID tersebut.
+Auditor mengambil dokumen melalui gateway IPFS, mencatat keputusan on-chain, dan secara opsional melampirkan CID laporan audit.
+Konsumen mengkueri status batch secara read-only melalui \texttt{getBatch} via endpoint JSON-RPC yang disematkan dalam URL web; kode QR mengodekan URL ini sehingga pemindaian tidak memerlukan perangkat lunak dompet.
+
+\input{figures-indo/architecture}
+
+Desain memisahkan \emph{bukti} (hosting besar dan dapat berubah pada IPFS) dari \emph{komitmen} (kecil, direplikasi, permanen pada L2).
+Tabel~\ref{tab:datasplit} merangkum pemisahan tersebut.
+
+\begin{table}[t]
+  \caption{Penempatan data on-chain vs.\ off-chain.}
+  \label{tab:datasplit}
+  \centering
+  \footnotesize
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.36\columnwidth}>{\raggedright\arraybackslash}p{0.18\columnwidth}X@{}}
+    \toprule
+    \textbf{Data} & \textbf{Lokasi} & \textbf{Alasan} \\
+    \midrule
+    Status batch, cap waktu & On-chain & FSM tahan manipulasi \\
+    Alamat produsen/auditor & On-chain & Akuntabilitas \\
+    CID IPFS & On-chain & Jangkar berbasis alamat konten \\
+    Alasan penolakan (string) & On-chain & Jejak audit permanen \\
+    PDF, gambar, laporan lab & IPFS & Biaya dan ukuran \\
+    Berkas pendukung audit & IPFS & Sama seperti dokumen produsen \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Siklus Hidup Batch}
+Status batch mengikuti mesin status terbatas (FSM) dengan lima nilai enumerasi: \texttt{Unknown}, \texttt{Pending}, \texttt{Verified}, \texttt{Rejected}, dan \texttt{Revoked}.
+Tabel~\ref{tab:fsm} mencantumkan transisi yang diizinkan; semua transisi lain gagal pada lapisan kontrak.
+
+\begin{table}[t]
+  \caption{Transisi status batch yang ditegakkan oleh \texttt{HalalChain.sol}.}
+  \label{tab:fsm}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}p{0.14\columnwidth}>{\raggedright\arraybackslash}p{0.20\columnwidth}>{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Dari} & \textbf{Ke} & \textbf{Pemicu} \\
+    \midrule
+    --- & Pending & \makecell[tl]{\texttt{registerBatch},\\\texttt{registerRevision}} \\
+    Pending & Verified & \makecell[tl]{\texttt{verifyBatch}\\\textit{(auditor)}} \\
+    Pending & Rejected & \makecell[tl]{\texttt{rejectBatch}\\\textit{(auditor)}} \\
+    Verified & Revoked & \makecell[tl]{\texttt{revokeBatch}\\\textit{(auditor)}} \\
+    Rejected & Pending (id baru) & \texttt{registerRevision} \\
+    Rejected & Verified & \emph{Dilarang} (gagal) \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Batch yang ditolak tidak dapat diverifikasi ulang pada tempatnya; produsen mengajukan \emph{revisi} sebagai batch baru yang ditautkan melalui \texttt{parentBatchId}, mempertahankan alasan penolakan asli dan metadata audit untuk pemeriksaan.
+Pencabutan hanya berlaku untuk batch yang sebelumnya Verified---misalnya, ketika pengawasan pasca-pasar menemukan kecurangan---dan mencatat string alasan on-chain.
+
+\subsection{Spesifikasi Kontrak Pintar}
+Kontrak \texttt{HalalChain.sol} (Solidity ${\hat{}}0.8.20$, OpenZeppelin \texttt{AccessControl}~\cite{openzeppelin2024access}) mendefinisikan konstanta peran \texttt{PRODUCER\_ROLE}, \texttt{AUDITOR\_ROLE}, dan \texttt{DEFAULT\_ADMIN\_ROLE}.
+Kesalahan kustom (\texttt{InvalidBatch}, \texttt{InvalidStatus}, \texttt{NotOriginalProducer}, \texttt{ParentNotRejected}) menggantikan string revert untuk menghemat gas dan meningkatkan kejelasan integrator.
+
+\textbf{Field struct Batch:}
+\texttt{producer}, \texttt{productName}, \texttt{ipfsCid}, \texttt{createdAt}, \texttt{status}, \texttt{auditor}, \texttt{auditedAt}, \texttt{auditIpfsCid}, \texttt{rejectReason}, \texttt{parentBatchId}.
+
+\textbf{Fungsi utama:}
+\begin{itemize}
+  \item \texttt{registerBatch(productName, ipfsCid)} --- membuat batch dengan \texttt{parentBatchId = 0}, status Pending; memancarkan \texttt{BatchRegistered}.
+  \item \texttt{registerRevision(parentBatchId, ipfsCid)} --- mensyaratkan induk Rejected dan \texttt{msg.sender == parent.producer}; mewarisi \texttt{productName}; memancarkan peristiwa dengan tautan induk.
+  \item \texttt{verifyBatch(batchId, auditIpfsCid)} --- Pending $\rightarrow$ Verified; mengatur field auditor; memancarkan \texttt{BatchVerified}.
+  \item \texttt{rejectBatch(batchId, reason, auditIpfsCid)} --- Pending $\rightarrow$ Rejected; menyimpan alasan; memancarkan \texttt{BatchRejected}.
+  \item \texttt{revokeBatch(batchId, reason)} --- Verified $\rightarrow$ Revoked; memancarkan \texttt{BatchRevoked}.
+  \item \texttt{getBatch(batchId)} --- view publik mengembalikan struct lengkap; digunakan halaman konsumen tanpa biaya transaksi.
+\end{itemize}
+
+Peristiwa diindeks pada \texttt{batchId} dan alamat peserta jika berlaku, memungkinkan block explorer dan pengindeks subgraph merekonstruksi linimasa audit tanpa API proprietari.
+
+\subsection{Penyimpanan Off-Chain dan Integritas}
+Dokumen dipin pada IPFS melalui Pinata; hanya CID yang disimpan on-chain~\cite{benet2014ipfs,christidis2016blockchain}.
+Integritas mengikuti penandaan alamat konten: jika gateway mengembalikan byte yang hash-nya tidak cocok dengan CID yang dikaitkan, klien harus memperlakukan dokumen sebagai tidak terpercaya.
+Ketersediaan bergantung pada kebijakan pinning---CID yang tidak dipin dapat menjadi tidak dapat dijangkau meskipun referensi on-chain tetap ada---keterbatasan yang dianalisis di Bagian~\ref{sec:discussion}.
+API unggah tidak pernah mengekspos kredensial JWT Pinata ke browser; hanya rute Next.js sisi server yang menyimpan rahasia.
+
+\subsection{Jalur Verifikasi Konsumen}
+Konsumen mengakses \texttt{/verify/\{batchId\}} pada frontend yang di-deploy.
+Halaman memanggil \texttt{getBatch} melalui endpoint RPC publik (klien baca Viem/Wagmi), merender UI spesifik status (Verified / Pending / Rejected / Revoked), menampilkan tautan IPFS untuk dokumen produsen dan audit, serta menampilkan \texttt{parentBatchId} jika ada.
+Tidak ada materi kunci privat yang dimuat pada rute konsumen, memenuhi persyaratan tanpa dompet pada Tabel~\ref{tab:related}.

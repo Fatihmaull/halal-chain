@@ -1,0 +1,40 @@
+\section{Kajian Terkait}
+\label{sec:related}
+
+Tabel~\ref{tab:related} membandingkan HalalChain dengan sistem ketertelusuran representatif dalam hal spesifisitas halal, desentralisasi, kebutuhan dompet konsumen, dan dukungan riwayat revisi pasca-penolakan.
+Platform khusus halal sebelumnya seperti HALAL TRACE mengandalkan basis data terpusat dan tidak mengekspos jejak audit publik yang permanen~\cite{rashid2018halal}.
+Sistem ketertelusuran pangan blockchain umum (IBM Food Trust, VeChain) menunjukkan adopsi industri tetapi tidak disesuaikan dengan alur kerja sertifikasi halal, semantik penolakan auditor, atau pembingkaian etis Islam~\cite{kamilaris2019blockchain,casino2021systematic,kamath2018blockchain}.
+Portal pemerintah seperti BPJPH SIHALAL menyediakan registrasi resmi tetapi tetap dikelola secara terpusat tanpa verifikasi publik tingkat batch bagi pihak ketiga mana pun.
+
+\input{tables-indo/related_work}
+
+\subsection{Ketertelusuran Rantai Pasok Blockchain}
+Tinjauan sistematis mengidentifikasi ketidakberubahan, keterauditabilitas, dan kepercayaan multi-pemangku kepentingan sebagai motivasi utama blockchain dalam rantai pasok~\cite{casino2021systematic,kshetri2018blockchain,galvez2018future}.
+Ledger berizin (Hyperledger Fabric) mendominasi percontohan enterprise karena menawarkan manajemen identitas, saluran privat, dan throughput yang dapat diprediksi~\cite{andoni2019blockchain,abeyratne2016blockchain}.
+Rantai publik memungkinkan akses baca tanpa izin---konsumen mana pun dengan pengenal batch dapat memverifikasi status tanpa kerja sama vendor---dengan biaya transaksi dan onboarding dompet bagi penulis~\cite{underwood2016blockchain}.
+Rollup Layer~2 seperti Optimistic rollup (termasuk OP Stack yang mendasari Base) mengelompokkan transaksi ke L1 sambil mewarisi asumsi keamanan Ethereum, sehingga menurunkan biaya per operasi~\cite{kalodner2018arbitrum,optimism2024spec}.
+HalalChain mengadopsi L2 publik tepat untuk menjaga transparansi baca bagi konsumen sambil menjaga biaya tulis dalam jangkauan UMKM.
+
+Tinjauan industri pangan mencatat pola berulang: hash atau pengenal on-chain, muatan off-chain, dan log peristiwa untuk provenance~\cite{rejeb2020blockchain,kouhizadeh2018blockchain}.
+Caro \emph{dkk.} mengimplementasikan ketertelusuran agri-food dengan rantai peristiwa berbasis blockchain~\cite{caro2018blockchain}; HalalChain berbeda dengan menempatkan \emph{status sertifikasi} dan \emph{keputusan auditor} sebagai pusat, bukan hanya peristiwa logistik.
+
+\subsection{Sistem Integritas Halal}
+Literatur rantai pasok halal menekankan ketertelusuran dari farm to fork, keaslian sertifikasi, dan pengakuan lintas batas~\cite{sidarto2021halal,rejeb2018halal,rashid2018halal}.
+Sidarto dan Hamka mengusulkan blockchain untuk ketertelusuran unggas di Indonesia, menyoroti tantangan integrasi dengan proses BPJPH yang ada~\cite{sidarto2021halal}.
+Rejeb \emph{dkk.} menggabungkan HACCP, blockchain, dan IoT untuk rantai pasok daging halal~\cite{rejeb2018halal}.
+Usulan terbaru menggabungkan blockchain dengan verifikasi QR dan pemeriksaan dokumen berbantuan AI~\cite{alourani2025halal,marianingsih2024halal}.
+
+Namun, sedikit sistem yang memodelkan \emph{penolakan auditor} sebagai status terminal on-chain dengan jalur pengajuan ulang terstruktur.
+Dalam praktik, aplikasi yang ditolak dikoreksi di luar ledger dan masuk kembali ke alur kerja secara tidak transparan---melemahkan akuntabilitas (\emph{Hisba}).
+HalalChain mengodekan alasan penolakan, CID dokumen audit, dan tautan \texttt{parentBatchId} sehingga konsumen dan regulator dapat memeriksa jejak keputusan lengkap.
+
+\subsection{Penyimpanan Off-Chain dan IPFS}
+Menyimpan sertifikat PDF dan laporan laboratorium lengkap on-chain tidak ekonomis: gas berskala dengan ukuran calldata, dan node rantai mereplikasi semua data secara global~\cite{benet2014ipfs,christidis2016blockchain}.
+Penyimpanan berbasis alamat konten melalui IPFS menurunkan pengenal (CID) dari hash dokumen; manipulasi apa pun mengubah CID, sehingga memungkinkan pemeriksaan integritas ketika CID dikaitkan on-chain~\cite{benet2014ipfs}.
+Christidis dan Devetsikiotis meninjau pola integrasi kontrak pintar dan IoT di mana blockchain menyimpan referensi, bukan muatan~\cite{christidis2016blockchain}.
+HalalChain mengikuti pola ini: kontrak menyimpan string \texttt{ipfsCid} dan \texttt{auditIpfsCid}; Pinata menyediakan pinning agar gateway tetap dapat diakses selama evaluasi.
+
+\subsection{Kesenjangan Penelitian}
+Sistem digital halal yang ada sebagian besar mengandalkan basis data terpusat atau blockchain enterprise tanpa verifikasi konsumen tanpa dompet.
+HalalChain menggabungkan: (i)~verifikabilitas L2 publik; (ii)~peran produsen/auditor terpisah RBAC; (iii)~riwayat revisi permanen setelah penolakan; dan (iv)~pemetaan eksplisit persyaratan desain etis ke properti protokol (Bagian~\ref{sec:prelim}).
+Tolok ukur gas L2 yang dipublikasikan dari penelitian sebelumnya~\cite{kalodner2018arbitrum} menginformasikan motivasi biaya; metrik mainnet atau testnet khusus HalalChain dilaporkan hanya setelah deployment (Bagian~\ref{sec:eval-b}).
