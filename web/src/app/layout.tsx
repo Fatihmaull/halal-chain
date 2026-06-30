@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "HalalChain",
   description: "Halal supply chain verification (prototype)",
+  icons: {
+    icon: "/logo-notext.png",
+  },
 };
 
 export default function RootLayout({

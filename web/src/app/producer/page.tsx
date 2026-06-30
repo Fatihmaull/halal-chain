@@ -95,11 +95,14 @@ export default function ProducerPage() {
   const verifyUrl = lastBatchId ? `${getDemoUrl()}/verify/${lastBatchId}` : null;
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
-      <AppHeader subtitle={t("producer")} />
+    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+      <AppHeader subtitle={t("producer")} hideNav />
 
       <main className="mx-auto w-full max-w-3xl px-6 py-10">
-        <div className="rounded-2xl border border-black/10 bg-white p-8 dark:border-white/10 dark:bg-zinc-950">
+        <Link href="/" className="mb-3 inline-flex items-center text-sm text-zinc-500 hover:text-green-600 transition-colors">
+          {t("backToHome")}
+        </Link>
+        <div className="rounded-2xl border border-zinc-100 bg-white p-8 shadow-sm">
           <WalletBar
             isConnected={isConnected}
             walletAddress={walletAddress}
@@ -113,7 +116,7 @@ export default function ProducerPage() {
               {[1, 2, 3].map((s) => (
                 <div
                   key={s}
-                  className={`h-1 flex-1 rounded-full ${step >= s ? "bg-zinc-950 dark:bg-white" : "bg-zinc-200 dark:bg-zinc-800"}`}
+                  className={`h-1 flex-1 rounded-full ${step >= s ? "bg-green-600" : "bg-zinc-100"}`}
                 />
               ))}
             </div>
@@ -127,7 +130,7 @@ export default function ProducerPage() {
                     onChange={(e) => setMeta({ ...meta, productName: e.target.value })}
                   />
                 </Field>
-                <Field label="Production date">
+                <Field label={t("productionDate")}>
                   <input
                     type="date"
                     className="input-field"
@@ -135,7 +138,7 @@ export default function ProducerPage() {
                     onChange={(e) => setMeta({ ...meta, productionDate: e.target.value })}
                   />
                 </Field>
-                <Field label="Expiry date">
+                <Field label={t("expiryDate")}>
                   <input
                     type="date"
                     className="input-field"
@@ -143,7 +146,7 @@ export default function ProducerPage() {
                     onChange={(e) => setMeta({ ...meta, expiryDate: e.target.value })}
                   />
                 </Field>
-                <Field label="Ingredients">
+                <Field label={t("ingredients")}>
                   <textarea
                     className="input-field min-h-20"
                     value={meta.ingredients}
@@ -151,7 +154,7 @@ export default function ProducerPage() {
                   />
                 </Field>
                 <button className="btn-primary" onClick={() => setStep(2)}>
-                  Next
+                  {t("next")}
                 </button>
               </div>
             )}
@@ -170,7 +173,7 @@ export default function ProducerPage() {
                       value={parentBatchId}
                       onChange={(e) => setParentBatchId(e.target.value)}
                     >
-                      <option value="">— New batch —</option>
+                      <option value="">{t("newBatch")}</option>
                       {rejectedBatches.map((b) => (
                         <option key={String(b.id)} value={String(b.id)}>
                           #{String(b.id)} — {b.batch.productName} (rejected)
@@ -181,7 +184,7 @@ export default function ProducerPage() {
                 )}
                 <div className="flex gap-2">
                   <button className="btn-secondary" onClick={() => setStep(1)}>
-                    Back
+                    {t("back")}
                   </button>
                   <button
                     className="btn-primary flex-1"
@@ -189,7 +192,7 @@ export default function ProducerPage() {
                     disabled={!isConnected || isPending || isConfirming}
                     onClick={onRegister}
                   >
-                    {isPending || isConfirming ? "Submitting…" : parentBatchId ? t("submitRevision") : t("registerBatch")}
+                    {isPending || isConfirming ? t("submitting") : parentBatchId ? t("submitRevision") : t("registerBatch")}
                   </button>
                 </div>
               </div>
@@ -199,7 +202,7 @@ export default function ProducerPage() {
             {err && <ErrorBox message={err} />}
 
             {verifyUrl && (
-              <div className="mt-8 rounded-xl border border-black/10 p-6 text-center dark:border-white/10">
+              <div className="mt-8 rounded-xl border border-zinc-100 bg-zinc-50 p-6 text-center shadow-sm">
                 <div className="text-sm font-semibold">{t("qrTitle")}</div>
                 <div className="mt-4 flex justify-center">
                   <QRCodeSVG value={verifyUrl} size={160} />
@@ -214,20 +217,20 @@ export default function ProducerPage() {
         </div>
 
         {myBatches.length > 0 && (
-          <div className="mt-8 rounded-2xl border border-black/10 bg-white p-8 dark:border-white/10 dark:bg-zinc-950">
+          <div className="mt-8 rounded-2xl border border-zinc-100 bg-white p-8 shadow-sm">
             <h2 className="text-sm font-semibold">{t("history")}</h2>
             <div className="mt-4 space-y-2">
               {myBatches.map(({ id, batch }) => (
                 <Link
                   key={String(id)}
                   href={`/verify/${id}`}
-                  className="flex items-center justify-between rounded-xl border border-black/10 px-4 py-3 text-sm hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                  className="flex items-center justify-between rounded-xl border border-zinc-100 px-4 py-3 text-sm hover:bg-zinc-50 transition-colors"
                 >
                   <span>
                     #{String(id)} — {batch.productName}
                   </span>
                   <span className={`rounded-full px-2 py-0.5 text-xs ${statusColors(batch.status)}`}>
-                    {batch.status === 1 ? "Pending" : batch.status === 2 ? "Verified" : batch.status === 3 ? "Rejected" : "Revoked"}
+                    {batch.status === 1 ? t("pendingLabel") : batch.status === 2 ? t("verifiedLabel") : batch.status === 3 ? t("rejectedLabel") : t("revokedLabel")}
                   </span>
                 </Link>
               ))}

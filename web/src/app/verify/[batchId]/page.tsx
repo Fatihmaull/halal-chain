@@ -38,13 +38,13 @@ export default function VerifyBatchPage() {
   const statusDesc = t(statusDescKey(status));
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
+    <div className="min-h-screen bg-zinc-50 text-zinc-900">
       <AppHeader subtitle={t("verifyBatch")} />
 
       <main className="mx-auto w-full max-w-lg px-6 py-10">
-        <div className="rounded-2xl border border-black/10 bg-white p-8 dark:border-white/10 dark:bg-zinc-950">
-          <div className="text-sm text-zinc-600 dark:text-zinc-400">{t("batchId")}</div>
-          <div className="mt-1 text-3xl font-bold tracking-tight">#{batchIdParam}</div>
+        <div className="rounded-2xl border border-zinc-100 bg-white p-8 shadow-sm">
+          <div className="text-sm text-zinc-600">{t("batchId")}</div>
+          <div className="mt-1 text-3xl font-bold tracking-tight text-zinc-900">#{batchIdParam}</div>
 
           {!contractAddress && (
             <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
@@ -140,7 +140,7 @@ export default function VerifyBatchPage() {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-black/10 bg-zinc-50 p-4 dark:border-white/10 dark:bg-black">
+    <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-4">
       <dt className="text-xs uppercase text-zinc-500">{label}</dt>
       <dd className="mt-1">{value}</dd>
     </div>

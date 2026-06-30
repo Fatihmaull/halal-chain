@@ -75,11 +75,14 @@ export default function AuditorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-black dark:text-zinc-50">
-      <AppHeader subtitle={t("auditor")} />
+    <div className="min-h-screen bg-zinc-50 text-zinc-900">
+      <AppHeader subtitle={t("auditor")} hideNav />
 
       <main className="mx-auto w-full max-w-3xl px-6 py-10">
-        <div className="rounded-2xl border border-black/10 bg-white p-8 dark:border-white/10 dark:bg-zinc-950">
+        <Link href="/" className="mb-3 inline-flex items-center text-sm text-zinc-500 hover:text-green-600 transition-colors">
+          {t("backToHome")}
+        </Link>
+        <div className="rounded-2xl border border-zinc-100 bg-white p-8 shadow-sm">
           <WalletBar
             isConnected={isConnected}
             walletAddress={walletAddress}
@@ -90,7 +93,7 @@ export default function AuditorPage() {
 
           {isConnected && hasAuditorRole === false && (
             <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-              Wallet tidak memiliki AUDITOR_ROLE. Hubungi admin kontrak.
+              {t("noAuditorRole")}
             </div>
           )}
 
@@ -105,24 +108,24 @@ export default function AuditorPage() {
                     key={String(id)}
                     type="button"
                     data-testid={`auditor-pending-${id}`}
-                    className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm ${
+                    className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm transition-colors ${
                       String(id) === String(selected?.id)
-                        ? "border-zinc-950 bg-zinc-50 dark:border-white dark:bg-zinc-900"
-                        : "border-black/10 hover:bg-black/5 dark:border-white/10"
+                        ? "border-green-600 bg-green-50 text-green-900"
+                        : "border-zinc-200 hover:bg-zinc-50"
                     }`}
                     onClick={() => setSelectedId(String(id))}
                   >
                     <span>
                       #{String(id)} — {batch.productName}
                     </span>
-                    <span className={`rounded-full px-2 py-0.5 text-xs ${statusColors(1)}`}>Pending</span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs ${statusColors(1)}`}>{t("pendingLabel")}</span>
                   </button>
                 ))}
               </div>
             )}
 
             {selected && (
-              <div className="mt-8 grid gap-4 border-t border-black/10 pt-8 dark:border-white/10">
+              <div className="mt-8 grid gap-4 border-t border-zinc-100 pt-8">
                 <div className="text-sm">
                   <span className="text-zinc-500">{t("batchId")}: </span>#{String(selected.id)}
                 </div>
@@ -183,19 +186,19 @@ export default function AuditorPage() {
             )}
 
             {confirmAction && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                <div className="w-full max-w-sm rounded-2xl bg-white p-6 dark:bg-zinc-950">
-                  <p className="text-sm">Confirm {confirmAction} batch #{selected ? String(selected.id) : ""}?</p>
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+                <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+                  <p className="text-sm">{t("confirmText")} {confirmAction} batch #{selected ? String(selected.id) : ""}?</p>
                   <div className="mt-4 flex gap-2">
                     <button className="btn-secondary flex-1" onClick={() => setConfirmAction(null)}>
-                      Cancel
+                      {t("cancelText")}
                     </button>
                     <button
                       className="btn-primary flex-1"
                       disabled={isPending || isConfirming}
                       onClick={() => execute(confirmAction)}
                     >
-                      Confirm
+                      {t("confirmText")}
                     </button>
                   </div>
                 </div>
@@ -204,13 +207,13 @@ export default function AuditorPage() {
 
             {verified.length > 0 && (
               <div className="mt-6">
-                <h3 className="text-xs uppercase text-zinc-500">Revoke verified batch</h3>
+                <h3 className="text-xs text-zinc-500">{t("revokeVerified")}</h3>
                 <select
                   className="input-field mt-2"
                   value={revokeId}
                   onChange={(e) => setRevokeId(e.target.value)}
                 >
-                  <option value="">— Select —</option>
+                  <option value="">{t("selectBatch")}</option>
                   {verified.map(({ id, batch }) => (
                     <option key={String(id)} value={String(id)}>
                       #{String(id)} — {batch.productName}
